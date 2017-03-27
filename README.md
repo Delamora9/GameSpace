@@ -12,10 +12,10 @@ Steam will be used as the base for games and users. React will be used to build 
  * Make API calls to a remote service.
  * Have a nice look and feel.
 
-### Details on Views
-	1. Display games and users - It will be searchable by game or user, and selecting one will redirect the user to either the user profile or game profile view.
-	2. User profiles - When a user is selected from any view, it will redirect to an overview of that user's profile. Information such as achievements, friends, time spent playing, reviews made, and games played will be available through this view. Selecting a game would redirect to the game profile view.
-	3. Game profiles - This view will show information such as achievements, genre, reviews, and possibly users who have played it.
+## Details on Views ##
+  1. Display games and users - It will be searchable by game or user, and selecting one will redirect the user to either the user profile or game profile view.
+  2. User profiles - When a user is selected from any view, it will redirect to an overview of that user's profile. Information such as achievements, friends, time spent playing, reviews made, and games played will be available through this view. Selecting a game would redirect to the game profile view.
+  3. Game profiles - This view will show information such as achievements, genre, reviews, and possibly users who have played it.
 
 
 ## Checkpoints
