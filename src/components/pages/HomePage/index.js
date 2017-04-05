@@ -4,7 +4,9 @@ import { PageTemplate } from 'components'
 
 const HomePage = () => {
   return (
-    <PageTemplate>Hello World</PageTemplate>
+    <PageTemplate>
+      Hello World
+    </PageTemplate>
   )
 }
 
