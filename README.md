@@ -20,6 +20,6 @@ Steam will be used as the base for games and users. React will be used to build 
 
 ## Checkpoints
   * ~~March 24 - Teams finalized and project decided.~~
-  * March 31 - Framework selected. Base project structure and tooling decided.
+  * ~~March 31 - Framework selected. Base project structure and tooling decided.
   * April 7 - Routing setup with static HTML/CSS views.
   * April 21 - 1 Unit and 1 E2E test working
