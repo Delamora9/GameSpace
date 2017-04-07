@@ -5,7 +5,11 @@ export default class SearchPage extends React.Component {
     return(
       <div>
         <h1>Search</h1>
-        <p>Search bar here</p>
+        <form>
+          <label for="search">Search a user or game:</label><br />
+          <input id="search" type="text" />
+          <button type="Submit">Submit</button>
+        </form>
       </div>
     );
   }
