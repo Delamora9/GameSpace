@@ -7,7 +7,7 @@ body {
 header {
     height: 100px;
     padding: 12px;
-    width: 100%;
+    margin: 0;
     background: #212d3a;
     color: #9099a1;
     font-size: 20pt;
@@ -19,7 +19,7 @@ header {
   footer {
       height: 50px;
       padding: 12px;
-      width: 100%;
+      margin: 0;
       background: #212d3a;
       color: #9099a1;
       font-size: 10pt;
