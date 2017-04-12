@@ -1,7 +1,11 @@
 let webpack = require('webpack');
 
 module.exports = {
-  entry: './src/app.js',
+  entry: [
+    './src/app.js',
+    'webpack/hot/dev-server',
+    'webpack-dev-server/client?http://localhost:8081'
+  ],
   devServer: {
     historyApiFallback: true
   },
@@ -19,6 +23,7 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: __dirname + '/dist/'
+    path: __dirname + '/dist/',
+    publicPath: 'http://localhost:8081/assets/'
   }
 };
