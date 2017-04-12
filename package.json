@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --progress --watch",
+    "start": "webpack-dev-server --hot --inline --progress --watch",
     "test": "jest",
     "coverage": "npm test -- --coverage",
     "dev": "npm run webpack-dev-server --progress --watch",

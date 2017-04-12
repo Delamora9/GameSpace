@@ -3,7 +3,6 @@ let webpack = require('webpack');
 module.exports = {
   entry: [
     './src/app.js',
-    'webpack/hot/dev-server',
     'webpack-dev-server/client?http://localhost:8081'
   ],
   devServer: {
@@ -24,6 +23,6 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: __dirname + '/dist/',
-    //publicPath: 'http://localhost:8081/assets/'
+    publicPath : 'http://localhost:8081/dist/'
   }
 };

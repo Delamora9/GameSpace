@@ -11,7 +11,7 @@ var url = require('url');
 ## --------your proxy----------------------
 var app = express();
 ## proxy the request for static assets
-app.use('/assets', proxy(url.parse('http://localhost:8081/assets')));
+app.use('/fist', proxy(url.parse('http://localhost:8081/dist')));
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -24,7 +24,7 @@ var server = new WebpackDevServer(webpack(config), {
     hot: true,
     quiet: false,
     noInfo: false,
-    publicPath: "/assets/",
+    publicPath: "/dist/",
 
     stats: { colors: true }
 });
