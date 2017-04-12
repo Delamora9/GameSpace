@@ -1,4 +1,3 @@
-    
 "use strict";
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -17,6 +16,29 @@ app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+# -----------------My stuff-------------
+
+var request = require('request');
+
+var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
+    'v2/?key=36991C4777F98B19F85825A2368DE13A&appid=8930';
+
+request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+    // Print to console to prove we downloaded the achievements.
+    console.log(steamHttpBody);
+});
+
+app.get('/steam/civ5achievements', function(httpRequest, httpResponse) {
+    // Calculate the Steam API URL we want to use
+    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
+        'v2/?key=36991C4777F98B19F85825A2368DE13A&appid=8930';
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.send(steamHttpBody);
+    });
+});
 
 # -----your-webpack-dev-server------------------
 var server = new WebpackDevServer(webpack(config), {
