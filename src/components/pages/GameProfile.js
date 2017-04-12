@@ -7,7 +7,9 @@ export default class GameProfile extends React.Component {
     return(
       <div>
         <h1>Game Profile for {params.game}</h1>
-        <p>data</p>
+        <div id="divbody">
+          <p>data</p>
+        </div>
       </div>
     );
   }

@@ -7,7 +7,9 @@ export default class UserProfile extends React.Component {
     return(
       <div>
         <h1>User Profile for {params.user}</h1>
-        <p>data</p>
+        <div id="divbody">
+          <p>data</p>
+        </div>
       </div>
     );
   }
