@@ -5,16 +5,36 @@ body {
 }
 
 header {
-    height: 100px;
+    height: auto;
     padding: 12px;
     margin: 0;
     background: #212d3a;
     color: #9099a1;
     font-size: 20pt;
     font-family: consolas;
-    display: block;
-    text-align: center;
+    display: inline-flex;
+    width: 100%;
   }
+
+ul {
+  height: 10px;
+  list-style: none;
+  display: flex;
+  color: #9099a1;
+  align: right;
+}
+
+li {
+  padding: 10px;
+}
+
+a:visited {
+  color: #9099a1;
+}
+
+a:hover {
+  background-color: black;
+}
 
   footer {
       height: 50px;
