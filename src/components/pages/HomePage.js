@@ -5,21 +5,6 @@ import { browserHistory } from 'react-router';
 
 export default class HomePage extends React.Component {
   render() {
-    document.addEventListener('DOMContentLoaded', function() {
-      let searchBar = document.getElementById("searchBar");
-      let searchButton = document.getElementById("searchButton")
-      searchButton.addEventListener('click', newQuery, false)
-    }, false);
-
-    //load the results page with the user's seach input
-    function newQuery() {
-      let searchValue = searchBar.value;
-      if (searchValue) {
-        let newPath = "/#/results/?search=" + searchValue;
-        browserHistory.push(newPath);
-      }
-    }
-
     return(
       <div>
         <h1>Search</h1>
@@ -31,4 +16,21 @@ export default class HomePage extends React.Component {
       </div>
     );
   }
+
+  componentDidMount() {
+    let searchBar = document.getElementById("searchBar");
+    let searchButton = document.getElementById("searchButton")
+    searchButton.addEventListener('click', newQuery, false)
+
+    //load the results page with the user's seach input
+    function newQuery() {
+      let searchValue = searchBar.value;
+      if (searchValue) {
+        let newPath = "/?#/results/?search=" + searchValue;
+        browserHistory.push(newPath);
+      }
+    }
+
+  }
+  
 }
