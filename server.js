@@ -55,7 +55,7 @@ app.get('/*', function(req, res) {
 //     httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 // });
 
-# -----your-webpack-dev-server------------------
+# -----webpack-dev-server------------------
 var server = new WebpackDevServer(webpack(config), {
     contentBase: __dirname,
     hot: true,
@@ -68,4 +68,4 @@ var server = new WebpackDevServer(webpack(config), {
 
 ## run the two servers
 server.listen(8081, "localhost", function() {});
-app.listen(8080);
+app.listen(8081);

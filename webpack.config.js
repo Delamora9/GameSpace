@@ -3,10 +3,12 @@ let webpack = require('webpack');
 module.exports = {
   entry: [
     './src/app.js',
-    'webpack-dev-server/client?http://localhost:8081'
+    'webpack-dev-server/client?http://localhost:8081/'
   ],
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
+    host: 'localhost', 
+    port: 8081
   },
   module: {
     loaders: [
