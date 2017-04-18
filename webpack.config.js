@@ -8,7 +8,11 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     host: 'localhost', 
-    port: 8081
+    port: 8081,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+    }
   },
   module: {
     loaders: [
@@ -19,12 +23,22 @@ module.exports = {
         query: {
           presets: ['react', 'es2015']
         }
-      }
+      },
+      { test: /\.json$/, loader: 'json-loader' }
     ]
   },
   output: {
     filename: 'bundle.js',
     path: __dirname + '/dist/',
     publicPath : 'http://localhost:8081/dist/'
+  },
+  resolve: {
+    extensions: ['.webpack.js', '.web.js', '.js']
+  },
+  node: {
+    console: true,
+    fs: "empty",
+    net: "empty",
+    tls: "empty"
   }
 };
