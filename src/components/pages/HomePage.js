@@ -11,43 +11,22 @@ export default class HomePage extends React.Component {
       let searchButton = document.getElementById("searchButton")
       searchButton.addEventListener('click', newQuery, false)
     }, false);
-
-    //load the results page with the user's seach input
-    function newQuery() {
-      let searchValue = searchBar.value;
-      if (searchValue) {
-        let newPath = "/#/results/?search=" + searchValue;
-        browserHistory.push(newPath);
-      }
-    }
-
     var Steam = require('steam-webapi');
 
     // Set global Steam API Key
     Steam.key = "36991C4777F98B19F85825A2368DE13A";
 
-    Steam.ready(function(err) {
-        if (err) return console.log(err);
 
-        var steam = new Steam();
+    //load the results page with the user's seach input
+    function newQuery() {
+      let searchValue = searchBar.value;
+      if (searchValue) {
+        //redirect to searchpage view on input
+        let newPath = "/#/results/?search=" + searchValue;
+        browserHistory.push(newPath);
+      }
+    }
 
-        // Retrieve the steam ID from a steam username/communityID
-        steam.resolveVanityURL({vanityurl:'jonbo'}, function(err, data) {
-            console.log(data);
-            // data -> { steamid: '76561197968620915', success: 1 }
-
-            // Get the Player's TF2 Backpack items
-            data.gameid = Steam.TF2;
-
-            // getPlayerItems requires { gameid, steamid }
-            steam.getPlayerItems(data, function (err, data) {
-                console.log(data);
-                // data -> { status: 1, num_backpack_slots: 1100, items: [...], ...}
-
-            });
-        });
-
-    });
 
     // var request = require('request');
 
@@ -86,7 +65,7 @@ export default class HomePage extends React.Component {
     //     // return the original POST body.
     //     httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
     // });
-    
+
     return(
       <div>
       {this.props.children}

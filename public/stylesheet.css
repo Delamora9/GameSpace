@@ -41,6 +41,15 @@ ul {
   float: right;
 }
 
+#returnResults {
+  margin-left: 30%;
+  margin-right: 70%;
+  display: flex;
+  color: black;
+  font-size: 22px;
+  /*float: left;*/
+}
+
 li {
   padding: 10px;
 }
