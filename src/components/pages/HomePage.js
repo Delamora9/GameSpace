@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { browserHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 
 export default class HomePage extends React.Component {
@@ -26,8 +26,8 @@ export default class HomePage extends React.Component {
     function newQuery() {
       let searchValue = searchBar.value;
       if (searchValue) {
-        let newPath = "/?#/results/?search=" + searchValue;
-        browserHistory.push(newPath);
+        let newPath = "/results/?search=" + searchValue;
+        hashHistory.push(newPath);
       }
     }
 
