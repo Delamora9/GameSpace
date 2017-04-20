@@ -9,7 +9,7 @@ export default class HomePage extends React.Component {
         <div id="header">
           <header>
           <h1 id="title">GameSpace</h1>
-            <ul>
+            <ul id="navbar">
               <li><Link to="/">Home</Link></li>
               <li><Link to="user/Topher">User Profile</Link></li>
               <li><Link to="game/Overwatch">Game Profile</Link></li>
