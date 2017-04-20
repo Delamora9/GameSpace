@@ -18,11 +18,12 @@ export default class HomePage extends React.Component {
   }
 
   componentDidMount() {
+    //capture DOM elements
     let searchBar = document.getElementById("searchBar");
-    let searchButton = document.getElementById("searchButton")
-    searchButton.addEventListener('click', newQuery, false)
+    let searchButton = document.getElementById("searchButton");
+    searchButton.addEventListener('click', newQuery, false);
 
-    //load the results page with the user's seach input
+    //load SearchPage with the user's search input
     function newQuery() {
       let searchValue = searchBar.value;
       if (searchValue) {
@@ -30,7 +31,6 @@ export default class HomePage extends React.Component {
         hashHistory.push(newPath);
       }
     }
-
   }
   
 }

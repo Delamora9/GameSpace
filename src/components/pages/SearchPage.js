@@ -1,10 +1,9 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
 
+
 export default class SearchPage extends React.Component {
   render() {
-    
-
     return(
       <div>
         <h1>Search</h1>
@@ -19,42 +18,39 @@ export default class SearchPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Component Mounted!");
-
-    //get the query value of 'search' from the url
-    const { query } = this.props.location;
-    const { search } = query;
-    console.log(search);
-
     //capture DOM elements
     let searchResults = document.getElementById("searchResults");
     let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
     searchButton.addEventListener('click', newQuery, false);
 
-    //gather results form Steam API and load it onto the page
-    function displayResults() {
-      console.log("displayResults(): ", search);
-      if (search) {
-        //reset search bar value
-        searchBar.value = search;
-        searchResults.innerHTML = "You searched: " + search;
-      }
-    }
-
-    //reload the page with new search query
+    //function to update the page with a new search query
     function newQuery() {
-      console.log("newQuery()");
       let searchValue = searchBar.value;
       if (searchValue) {
         let newPath = "/results/?search=" + searchValue;
         hashHistory.push(newPath);
-        displayResults();
       }
     }
 
-    //initial query
-    displayResults();
+    //force componentDidUpdate to be called when SearchPage is first mounted
+    this.forceUpdate();
+  }
+
+  componentDidUpdate() {
+    //set cursor focus to searchBar
+    searchBar.focus();
+
+    //get the query value of 'search'
+    const { query } = this.props.location;
+    const { search } = query;
+
+    //update the page to display the query's results
+    if (search) {
+      //refill search bar value
+      searchBar.value = search;
+      searchResults.innerHTML = "You searched: " + search;
+    }
   }
 
 }
