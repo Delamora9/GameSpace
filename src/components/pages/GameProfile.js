@@ -26,8 +26,18 @@ export default class GameProfile extends React.Component {
           //console.log(gameID);
 
           //Retrieve recent news for specific game
-          steam.getNewsForApp({appid: gameID, count: 5}, function(err, data){
-            //console.log(data);
+          steam.getNewsForApp({appid: gameID, count: 5}, function(err, newsData) {
+            //console.log(newsData);
+            let newsItems = newsData['appnews']['newsitems'];
+            let gameNews = document.getElementById('game-news');
+            if (newsData != null && newsData != undefined) {
+              for (let i = 0; i < newsItems.length; i++) {
+                let newsLi = document.createElement('li');
+                newsLi.innerHTML = newsItems[i]['title'] + '<br>' + newsItems[i]['contents'];
+                gameNews.appendChild(newsLi);
+              }
+            }
+            else gameNews.innerHTML = 'No news';
           });
         });
       }
@@ -37,7 +47,9 @@ export default class GameProfile extends React.Component {
       <div>
         <h1>Game Profile for {params.game}</h1>
         <div id="divbody">
-
+          <h3>Game News:</h3>
+          <ul id="game-news">
+          </ul>
         </div>
       </div>
     );
