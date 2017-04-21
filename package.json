@@ -20,6 +20,7 @@
     }
   },
   "devDependencies": {
+    "astrolabe": "^0.3.6",
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^19.0.0",
@@ -43,6 +44,7 @@
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^15.4.1",
     "request": "^2.81.0",
+    "webdriverio": "^4.7.1",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-dev-server": "^2.3.0"
