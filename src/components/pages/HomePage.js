@@ -6,31 +6,31 @@ import { hashHistory } from 'react-router';
 export default class HomePage extends React.Component {
   render() {
     var Steam = require('steam-webapi');
- 
-    // Set global Steam API Key 
+
+    // Set global Steam API Key
     Steam.key = "36991C4777F98B19F85825A2368DE13A";
-     
+
     Steam.ready(function(err) {
         if (err) return console.log(err);
-     
+
         var steam = new Steam();
-     
-        // Retrieve the steam ID from a steam username/communityID 
+
+        // Retrieve the steam ID from a steam username/communityID
         steam.resolveVanityURL({vanityurl:'jonbo'}, function(err, data) {
             console.log(data);
-            // data -> { steamid: '76561197968620915', success: 1 } 
-     
-            // Get the Player's TF2 Backpack items 
+            // data -> { steamid: '76561197968620915', success: 1 }
+
+            // Get the Player's TF2 Backpack items
             data.gameid = Steam.TF2;
-     
-            // getPlayerItems requires { gameid, steamid } 
+
+            // getPlayerItems requires { gameid, steamid }
             steam.getPlayerItems(data, function (err, data) {
                 console.log(data);
-                // data -> { status: 1, num_backpack_slots: 1100, items: [...], ...} 
-     
+                // data -> { status: 1, num_backpack_slots: 1100, items: [...], ...}
+
             });
         });
-     
+
     });
 
     // var request = require('request');
@@ -74,7 +74,13 @@ export default class HomePage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label for="search">Search a user or game:</label><br />
+          <span>Search a user or game:</span><br />
+          <span>Game search: </span>
+          <input id="gameSearch" name="searchType" type="radio" />
+          <br />
+          <span id="userSearchLabel">User search: </span>
+          <input id="userSearch" name="searchType" type="radio" />
+          <br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
@@ -86,14 +92,29 @@ export default class HomePage extends React.Component {
     //capture DOM elements
     let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
+    let userSearch = document.getElementById("userSearch");
+    let gameSearch = document.getElementById("gameSearch");
     searchButton.addEventListener('click', newQuery, false);
 
     //load SearchPage with the user's search input
-    function newQuery() {
-      let searchValue = searchBar.value;
-      if (searchValue) {
-        let newPath = "/results/?search=" + searchValue;
-        hashHistory.push(newPath);
+    function newQuery(e) {
+      if(!userSearch.checked && !gameSearch.checked){
+        e.preventDefault();
+        alert("Please select user or game filter");
+      }
+      else{
+        let searchValue = searchBar.value;
+        if (searchValue) {
+          let newPath = "/results/?search=" + searchValue;
+          if(userSearch.checked){
+              newPath += "&searchType=User";
+              hashHistory.push(newPath);
+          }
+          else {
+            newPath += "&searchType=Game";
+            hashHistory.push(newPath);
+          }
+        }
       }
     }
   }
