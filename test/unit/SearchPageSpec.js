@@ -1,4 +1,5 @@
-import SearchPage from 'components/SearchPage';
+import SearchPage from '../../src/components/pages/SearchPage.js';
+import React from 'react';
 
 describe('Search page', () => {
 	beforeEach(function() {

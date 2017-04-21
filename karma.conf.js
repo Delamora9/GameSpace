@@ -27,6 +27,24 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'test/**/*Spec.js': ['webpack']
+    },
+
+
+    webpack: {
+      module: {
+        loaders: [
+          {
+            test: /\.js/,
+            exclude: /node_modules/,
+            loader: 'babel-loader',
+            query: {
+               presets: ['react', 'es2015']
+            }
+          }
+        ]
+      },
+      watch: true
     },
 
 
