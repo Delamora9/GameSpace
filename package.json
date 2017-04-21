@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --hot --inline",
-    "test": "jest",
+    "unit-test": "karma start karma.conf.js",
     "coverage": "npm test -- --coverage",
     "dev": "npm run webpack-dev-server --progress --watch",
     "build": "webpack"
