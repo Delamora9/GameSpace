@@ -5,11 +5,11 @@ import ReactTestUtils from 'react-dom/test-utils';
 
 
 describe('Search page', () => {
-	beforeEach(function() {
-		this.renderedDOM = () => React.findDOMNode(this.component);
-	});
+	it("renders an h1", () => {
+		let component = ReactTestUtils.renderIntoDocument(<SearchPage />);
 
-	it("renders some JSX", function() {
-		expect(this.renderedDOM().children.length).toEqual(1);
+    	let h1 = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'h1');
+
+    	expect(h1.getDOMNode().textContent).toEqual("Search");
 	});
 });
