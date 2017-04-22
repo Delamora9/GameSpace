@@ -10,6 +10,6 @@ describe('Search page', () => {
 
     	let h1 = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'h1');
 
-    	expect(h1.getDOMNode().textContent).toEqual("Search");
+    	expect(h1.innerHTML).toEqual("Search");
 	});
 });
