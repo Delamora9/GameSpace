@@ -8,7 +8,7 @@ export default class SearchPage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label for="search">Search a user or game:</label><br />
+          <label htmlFor="search">Search a user or game:</label><br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
@@ -22,7 +22,9 @@ export default class SearchPage extends React.Component {
     let searchResults = document.getElementById("searchResults");
     let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
-    searchButton.addEventListener('click', newQuery, false);
+    if(searchButton){
+        searchButton.addEventListener('click', newQuery, false);
+    }
 
     //function to update the page with a new search query
     function newQuery() {
@@ -38,19 +40,25 @@ export default class SearchPage extends React.Component {
   }
 
   componentDidUpdate() {
+    let searchBar = document.getElementById("searchBar");
+    let searchResults = document.getElementById("searchResults");
     //set cursor focus to searchBar
-    searchBar.focus();
+    if(searchBar){
+      searchBar.focus();
+    }
 
     //get the query value of 'search'
-    const { query } = this.props.location;
-    const { search } = query;
-
-    //update the page to display the query's results
-    if (search) {
-      //refill search bar value
-      searchBar.value = search;
-      searchResults.innerHTML = "You searched: " + search;
+    if(this.props.location){
+      const { query } = this.props.location;
+      const { search } = query;
+      //update the page to display the query's results
+      if (search) {
+        //refill search bar value
+        searchBar.value = search;
+        searchResults.innerHTML = "You searched: " + search;
+      }
     }
+
   }
 
 }

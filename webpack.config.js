@@ -1,4 +1,5 @@
 let webpack = require('webpack');
+let path = require('path');
 
 module.exports = {
   entry: [
@@ -24,7 +25,10 @@ module.exports = {
           presets: ['react', 'es2015']
         }
       },
-      { test: /\.json$/, loader: 'json-loader' }
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
+      }
     ]
   },
   output: {
