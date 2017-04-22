@@ -17,14 +17,8 @@ export default class UserProfile extends React.Component {
         steam.resolveVanityURL({vanityurl: params.user}, function(err, data) {
             // data -> { steamid: '76561197968620915', success: 1 }
             var userSteamID = data['steamid'];
-          // Get the Player's TF2 Backpack items
-          data.gameid = Steam.TF2;
 
-          // getPlayerItems requires { gameid, steamid }
-          // steam.getPlayerItems(data, function (err, data) {
-          //     console.log(data);
-          //   });
-          steam.getFriendList(data, function (err, newdata) {
+            steam.getFriendList(data, function (err, newdata) {
               //console.log(newdata);
               //console.log(newdata['friendslist']['friends'][1]);
               if (newdata != null) {
