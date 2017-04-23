@@ -12,7 +12,7 @@ export default class HomePage extends React.Component {
             <ul id="navbar">
               <li><Link to="/">Home</Link></li>
               <li><Link to="user/Topher">User Profile</Link></li>
-              <li><Link to="game/Overwatch">Game Profile</Link></li>
+              <li><Link to="game/Counter-Strike">Game Profile</Link></li>
             </ul>
             </header>
             <div id="bodymain">
