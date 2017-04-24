@@ -74,7 +74,7 @@ export default class HomePage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label for="search">Search a user or game:</label><br />
+          <label htmlFor="search">Search a user or game:</label><br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
