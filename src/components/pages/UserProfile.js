@@ -19,16 +19,12 @@ export default class UserProfile extends React.Component {
             var userSteamID = data['steamid'];
 
             steam.getFriendList(data, function (err, newdata) {
-              //console.log(newdata);
-              //console.log(newdata['friendslist']['friends'][1]);
               if (newdata != null) {
                 var numfriends = newdata['friendslist']['friends'].length;
                 document.getElementsByTagName("h3")[0].innerHTML = "Friends: (" + numfriends + ")";
                 if (numfriends > 5) {
                   for (var i = 0; i < 5; i++) {
                     var friendsli = document.createElement('li');
-                    //var aTag = document.createElement('a');
-                    //aTag.setAttribute('href', "/#/user/" + search);
                     friendsli.innerHTML = 'Steam ID: ' + newdata['friendslist']['friends'][i+1]['steamid'];
                     document.getElementById("friends").appendChild(friendsli);
                   }

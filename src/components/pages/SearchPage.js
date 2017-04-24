@@ -5,14 +5,6 @@ import { hashHistory } from 'react-router';
 export default class SearchPage extends React.Component {
   render() {
 
-    document.addEventListener('DOMContentLoaded', function() {
-      let searchResults = document.getElementById("searchResults");
-      let searchBar = document.getElementById("searchBar");
-      let searchButton = document.getElementById("searchButton");
-      let resultul = document.getElementById("returnResults");
-      console.log(resultul);
-    }, false);
-
     return(
       <div>
         <h1>Search</h1>
@@ -32,8 +24,6 @@ export default class SearchPage extends React.Component {
 
   componentDidMount() {
     //capture DOM elements
-    let searchResults = document.getElementById("searchResults");
-    let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
     if(searchButton){
         searchButton.addEventListener('click', newQuery, false);
@@ -49,9 +39,8 @@ export default class SearchPage extends React.Component {
       }
     }
     //force componentDidUpdate to be called when SearchPage is first mounted
-    //this.forceUpdate();
-    // JLG commented out due to double calling of componentDidUpdate()
-    // and double of API calls
+    this.forceUpdate();
+
   }
 
   componentDidUpdate() {
@@ -61,7 +50,7 @@ export default class SearchPage extends React.Component {
     if(searchBar){
       searchBar.focus();
     }
-
+    document.getElementById("returnResults").innerHTML = "";
     if(this.props.location){
       const { query } = this.props.location;
       const { search } = query;
