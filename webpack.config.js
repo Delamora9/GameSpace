@@ -33,7 +33,7 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: __dirname + '/dist/',
+    path: __dirname + '/',
     publicPath : 'http://localhost:8081/dist/'
   },
   resolve: {

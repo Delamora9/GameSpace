@@ -1,131 +1,145 @@
 import React from 'react';
-var Steam = require('steam-webapi');
+const Steam = require('steam-webapi');
 
 // Set global Steam API Key
 Steam.key = "36991C4777F98B19F85825A2368DE13A";
 
 export default class UserProfile extends React.Component {
   render() {
-    console.log(this.props);
-    const {params} = this.props
-    Steam.ready(function(err) {
-        if (err) return console.log(err);
-
-        var steam = new Steam();
-
-        // Retrieve the steam ID from a steam username/communityID
-        steam.resolveVanityURL({vanityurl: params.user}, function(err, data) {
-            // data -> { steamid: '76561197968620915', success: 1 }
-            var userSteamID = data['steamid'];
-
-            steam.getFriendList(data, function (err, newdata) {
-              if (newdata != null) {
-                var numfriends = newdata['friendslist']['friends'].length;
-                document.getElementsByTagName("h3")[0].innerHTML = "Friends: (" + numfriends + ")";
-                if (numfriends > 5) {
-                  for (var i = 0; i < 5; i++) {
-                    var friendsli = document.createElement('li');
-                    friendsli.innerHTML = 'Steam ID: ' + newdata['friendslist']['friends'][i+1]['steamid'];
-                    document.getElementById("friends").appendChild(friendsli);
-                  }
-                }
-                else {
-                  for (var i = 0; i < numfriends; i++) {
-                    var friendsli = document.createElement('li');
-                    friendsli.innerHTML = 'Steam ID: ' + newdata['friendslist']['friends'][i+1]['steamid'];
-                    document.getElementById("friends").appendChild(friendsli);
-                  }
-                }
-              }
-              else {
-                var friendsli = document.createElement('li');
-                friendsli.innerHTML = 'None Available';
-                document.getElementById("friends").appendChild(friendsli);
-              }
-            });
-
-            data.count = 5;
-            steam.getRecentlyPlayedGames(data, function(err,data) {
-              console.log(data);
-              if (data != null) {
-                var numRecent = data['total_count'];
-                console.log(numRecent);
-                document.getElementsByTagName("h5")[0].innerHTML = "Recently Played: (" + numRecent + ")";
-                if (numRecent > 5) {
-                  for (var i = 0; i < 5; i++) {
-                    var recentli = document.createElement('li');
-                    recentli.innerHTML = data['games'][i]['name'];
-                    document.getElementById("games1").appendChild(recentli);
-                  }
-                }
-                else {
-                  for (var i = 0; i < numRecent; i++) {
-                    var recentli = document.createElement('li');
-                    recentli.innerHTML = data['games'][i]['name'];
-                    document.getElementById("games1").appendChild(recentli);
-                  }
-                }
-              }
-              else {
-                var recentli = document.createElement('li');
-                recentli.innerHTML = 'None Available';
-                document.getElementById("games1").appendChild(recentli);
-              }
-            });
-
-
-            data.include_appinfo = true;
-            data.include_played_free_games = false;
-            data.appids_filter = "";
-            steam.getOwnedGames(data, function(err, data) {
-              console.log(data);
-              if (data != null) {
-                var ownedGames = data['game_count'];
-                console.log(ownedGames);
-                document.getElementsByTagName("h5")[1].innerHTML = "Owned: (" + ownedGames + ")";
-                if (ownedGames > 5) {
-                  for (var i = 0; i < 5; i++) {
-                    var ownedli = document.createElement('li');
-                    ownedli.innerHTML = data['games'][i]['name'];
-                    document.getElementById("games2").appendChild(ownedli);
-                  }
-                }
-                else {
-                  for (var i = 0; i < ownedGames; i++) {
-                    var ownedli = document.createElement('li');
-                    ownedli.innerHTML = data['games'][i]['name'];
-                    document.getElementById("games2").appendChild(ownedli);
-                  }
-                }
-              }
-              else {
-                var ownedli = document.createElement('li');
-                ownedli.innerHTML = 'None Available';
-                document.getElementById("games2").appendChild(ownedli);
-              }
-            })
-
-        });
-
-      });
     return(
       <div>
-        <h1>User Profile for {params.user}</h1>
+        <h1>User Profile for {this.props.params.user}</h1>
         <div id="divbody">
-          <h3>Friends:</h3>
+          <h3 id="friendsTitle">Friends:</h3>
           <ul id="friends">
           </ul>
         </div>
         <div id="divbody">
           <h3>Games:</h3>
-          <h5>Recently Played:</h5>
-          <ul id="games1">
+          <h5 id="recentTitle">Recently Played:</h5>
+          <ul id="gamesPlayed">
           </ul>
-          <h5>Owned:</h5>
-          <ul id="games2">
+          <h5 id="ownedTitle">Owned:</h5>
+          <ul id="gamesOwned">
           </ul>
         </div>
       </div>
     );
   }
-}
+
+  componentDidMount() {
+    // Capture DOM elements
+    let friendsList = document.getElementById("friends");
+    let gamesPlayedList = document.getElementById("gamesPlayed");
+    let gamesOwnedList = document.getElementById("gamesOwned");
+    let friendsTitle = document.getElementById("friendsTitle");
+    let recentTitle = document.getElementById("recentTitle");
+    let ownedTitle = document.getElementById("ownedTitle");
+
+    // Grab params from the URL
+    const { params } = this.props
+
+    // Connect to Steam and retrieve player information
+    Steam.ready(function(err) {
+      if (err) return console.log(err);
+
+      let steam = new Steam();
+
+      // Retrieve the steam ID from a steam username/communityID
+      steam.resolveVanityURL({vanityurl: params.user}, function(err, data) {
+        // data -> { steamid: '76561197968620915', success: 1 }
+        if (data.success == 1) {
+          let userSteamID = data.steamid;
+
+          // Create list of friends
+          steam.getFriendList(data, function (err, friendData) {
+            if (friendData != null) {
+              buildFriendList(friendData);
+            } else {
+              let friendsli = document.createElement('li');
+              friendsli.innerHTML = 'None Available';
+              friendsList.appendChild(friendsli);
+            }
+          });
+
+          // Create list of played games
+          data.count = 5;
+          steam.getRecentlyPlayedGames(data, function(err, playedGamesData) {
+            console.log(playedGamesData);
+            if (playedGamesData != null) {
+              buildPlayedGamesList(playedGamesData);
+            } else {
+              let recentli = document.createElement('li');
+              recentli.innerHTML = 'None Available';
+              gamesPlayedList.appendChild(recentli);
+            }
+          });
+
+          // Create list of owned games
+          data.include_appinfo = true;
+          data.include_played_free_games = false;
+          data.appids_filter = "";
+          steam.getOwnedGames(data, function(err, ownedGamesData) {
+            console.log(ownedGamesData);
+            if (ownedGamesData != null) {
+              buildOwnedGamesList(ownedGamesData);
+            } else {
+              let ownedli = document.createElement('li');
+              ownedli.innerHTML = 'None Available';
+              gamesOwnedList.appendChild(ownedli);
+            }
+          })
+        } else {
+          // If the steamid is invalid direct user to ErrorPage
+          // Reirect to ErrorPage ************************************************************
+        }
+      });
+    });//end Steam call
+
+    // Takes JSON data from Steam and creates a list of friends
+    function buildFriendList(friendData) {
+      let numFriends = friendData.friendslist.friends.length;
+      friendsTitle.innerHTML = "Friends: (" + numFriends + ")";
+
+      let displayedFriends = numFriends;
+      if (numFriends > 5) { displayedFriends = 5 }
+
+      for (let i = 0; i < displayedFriends; i++) {
+        let friendsli = document.createElement('li');
+        friendsli.innerHTML = 'Steam ID: ' + friendData.friendslist.friends[i+1].steamid;
+        friendsList.appendChild(friendsli);
+      }
+    }
+
+    // Takes JSON data from Steam and creates a list of played games
+    function buildPlayedGamesList(playedGamesData) {
+      let numRecent = playedGamesData.total_count;
+      recentTitle.innerHTML = "Recently Played: (" + numRecent + ")";
+
+      let recentDisplayed = numRecent;
+      if (recentDisplayed > 5) { recentDisplayed = 5 }
+
+      for (let i = 0; i < recentDisplayed; i++) {
+        let recentli = document.createElement('li');
+        recentli.innerHTML = playedGamesData.games[i].name;
+        gamesPlayedList.appendChild(recentli);
+      }
+    }
+
+    // Takes JSON data from Steam and creates a list of owned games
+    function buildOwnedGamesList(ownedGamesData) {
+      let numOwned = ownedGamesData.game_count;
+      ownedTitle.innerHTML = "Owned: (" + numOwned + ")";
+
+      let ownedDisplayed = numOwned;
+      if (ownedDisplayed > 5) { ownedDisplayed = 5 }
+
+      for (let i = 0; i < ownedDisplayed; i++) {
+        let ownedli = document.createElement('li');
+        ownedli.innerHTML = ownedGamesData.games[i].name;
+        gamesOwnedList.appendChild(ownedli);
+      }
+    }
+
+  }//end componentDidMount
+}//end UserProfile
