@@ -57,7 +57,7 @@ export default class SearchPage extends React.Component {
   
     // Display result from Steam API
     function searchSteam(search) {
-      searchResults.innerHTML = "Loading...";
+      searchResults.innerText = "Loading...";
 
       let Steam = require('steam-webapi');
       Steam.key = "36991C4777F98B19F85825A2368DE13A";

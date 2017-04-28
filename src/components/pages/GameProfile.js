@@ -21,6 +21,7 @@ export default class GameProfile extends React.Component {
   componentDidMount() {
     // Capture DOM elements
     let gameNews = document.getElementById('game-news');
+    gameNews.innerHTML = "Loading...";
 
     // Grab params from the URL
     const { params } = this.props
@@ -34,7 +35,7 @@ export default class GameProfile extends React.Component {
 
         // Retrieve list of Apps and their ID
         steam.getAppList({}, function(err, data) {
-          //console.log(data);          
+          // Get list of games
           let gameList = data.applist.apps;
           let gameID;
 
@@ -48,6 +49,7 @@ export default class GameProfile extends React.Component {
           // Create list of game news
           if (gameID != null) {
             steam.getNewsForApp({appid: gameID, count: 5}, function(err, newsData) {
+              gameNews.innerHTML = "";
               buildGameNewsList(newsData);
             });
           } else {

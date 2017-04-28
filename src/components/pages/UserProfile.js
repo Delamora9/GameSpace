@@ -36,6 +36,11 @@ export default class UserProfile extends React.Component {
     let recentTitle = document.getElementById("recentTitle");
     let ownedTitle = document.getElementById("ownedTitle");
 
+    // Set loading indicators
+    friendsList.innerText = "Loading...";
+    gamesPlayedList.innerText = "Loading...";
+    gamesOwnedList.innerText = "Loading...";
+
     // Grab params from the URL
     const { params } = this.props
 
@@ -54,6 +59,7 @@ export default class UserProfile extends React.Component {
           // Create list of friends
           steam.getFriendList(data, function (err, friendData) {
             if (friendData != null) {
+              friendsList.innerText = "";
               buildFriendList(friendData);
             } else {
               let friendsli = document.createElement('li');
@@ -67,6 +73,7 @@ export default class UserProfile extends React.Component {
           steam.getRecentlyPlayedGames(data, function(err, playedGamesData) {
             console.log(playedGamesData);
             if (playedGamesData != null) {
+              gamesPlayedList.innerText = "";
               buildPlayedGamesList(playedGamesData);
             } else {
               let recentli = document.createElement('li');
@@ -82,6 +89,7 @@ export default class UserProfile extends React.Component {
           steam.getOwnedGames(data, function(err, ownedGamesData) {
             console.log(ownedGamesData);
             if (ownedGamesData != null) {
+              gamesOwnedList.innerText = "";
               buildOwnedGamesList(ownedGamesData);
             } else {
               let ownedli = document.createElement('li');
