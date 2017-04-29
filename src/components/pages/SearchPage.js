@@ -8,7 +8,11 @@ export default class SearchPage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label htmlFor="search">Search a user or game:</label><br />
+          <span>Search a user or game:</span><br />
+          <span>Game search: </span>
+          <input id="gameSearch" name="searchType" type="radio" /><br />
+          <span id="userSearchLabel">User search: </span>
+          <input id="userSearch" name="searchType" type="radio" /><br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
@@ -21,20 +25,35 @@ export default class SearchPage extends React.Component {
     // Capture DOM elements
     let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
+    let userSearch = document.getElementById("userSearch");
+    let gameSearch = document.getElementById("gameSearch");
     if(searchButton){
         searchButton.addEventListener('click', newQuery, false);
     }
 
     // Function to update the page with a new search query
-    function newQuery() {
-      let searchValue = searchBar.value;
-      if (searchValue) {
-        let newPath = "/results/?search=" + searchValue;
+    function newQuery(e) {
+      if (!userSearch.checked && !gameSearch.checked) {
+        e.preventDefault();
+        alert("Please select user or game filter");
+      }
+      else {
         var Steam = require('steam-webapi');
-        hashHistory.push(newPath);
+        let searchValue = searchBar.value;
+        if (searchValue) {
+          let newPath = "/results/?search=" + searchValue;
+          if (userSearch.checked) {
+            newPath += "&searchType=User";
+            hashHistory.push(newPath);
+          }
+          else {
+            newPath += "&searchType=Game";
+            hashHistory.push(newPath);
+          }
+        }
+
       }
     }
-
     // Force componentDidUpdate to be called when SearchPage is first mounted
     this.forceUpdate();
   }
@@ -47,6 +66,7 @@ export default class SearchPage extends React.Component {
     if(this.props.location){
       let { query } = this.props.location;
       let { search } = query;
+      let { searchType } = query;
 
       if (search) {
         searchBar.value = search;
@@ -54,7 +74,7 @@ export default class SearchPage extends React.Component {
         searchSteam(search);
       }
     }
-  
+
     // Display result from Steam API
     function searchSteam(search) {
       searchResults.innerHTML = "Loading...";
@@ -62,7 +82,7 @@ export default class SearchPage extends React.Component {
       let Steam = require('steam-webapi');
       Steam.key = "36991C4777F98B19F85825A2368DE13A";
 
-      // Update the page to display the query's results  
+      // Update the page to display the query's results
       Steam.ready(function(err) {
         if (err) return console.log(err);
 

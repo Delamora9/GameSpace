@@ -9,7 +9,11 @@ export default class HomePage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label htmlFor="search">Search a user or game:</label><br />
+          <label>Search a user or game:</label><br />
+          <span>Game search: </span>
+          <input id="gameSearch" name="searchType" type="radio" /><br />
+          <span id="userSearchLabel">User search: </span>
+          <input id="userSearch" name="searchType" type="radio" /><br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
@@ -21,6 +25,8 @@ export default class HomePage extends React.Component {
     //capture DOM elements
     let searchBar = document.getElementById("searchBar");
     let searchButton = document.getElementById("searchButton");
+    let userSearch = document.getElementById("userSearch");
+    let gameSearch = document.getElementById("gameSearch");
     searchButton.addEventListener('click', newQuery, false);
 
     //load SearchPage with the user's search input
@@ -28,7 +34,14 @@ export default class HomePage extends React.Component {
       let searchValue = searchBar.value;
       if (searchValue) {
         let newPath = "/results/?search=" + searchValue;
-        hashHistory.push(newPath);
+        if (userSearch.checked) {
+          newPath += "&searchType=User";
+          hashHistory.push(newPath);
+        }
+        else {
+          newPath += "&searchType=Game";
+          hashHistory.push(newPath);
+        }
       }
     }
   }
