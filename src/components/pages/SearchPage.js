@@ -10,9 +10,9 @@ export default class SearchPage extends React.Component {
         <form>
           <h4>Search a user or game (case-sensitive)</h4><br />
           <span>Game search: </span>
-          <input id="gameSearch" name="searchType" type="radio" /><br />
+          <input id="gameSearch" name="searchType" type="checkbox" value="gameSearch" /><br />
           <span id="userSearchLabel">User search: </span>
-          <input id="userSearch" name="searchType" type="radio" /><br />
+          <input id="userSearch" name="searchType" type="checkbox" value="userSearch" /><br />
           <input id="searchBar" type="text" />
           <button id="searchButton" type="Submit">Submit</button>
         </form>
@@ -42,12 +42,17 @@ export default class SearchPage extends React.Component {
         let searchValue = searchBar.value;
         if (searchValue) {
           let newPath = "/results/?search=" + searchValue;
-          if (userSearch.checked) {
+          if (userSearch.checked && !gameSearch.checked) {
             newPath += "&searchType=User";
             hashHistory.push(newPath);
           }
-          else {
+          else if (gameSearch.checked && !userSearch.checked) {
             newPath += "&searchType=Game";
+            hashHistory.push(newPath);
+          }
+          else if (userSearch.checked && gameSearch.checked)
+          {
+            newPath += "&searchType=Both";
             hashHistory.push(newPath);
           }
         }
@@ -103,17 +108,17 @@ export default class SearchPage extends React.Component {
               let resultli = document.createElement('li');
               let aTag = document.createElement('a');
               aTag.setAttribute('href', "/#/game/" + search);
-              aTag.innerHTML = search;
+              aTag.innerHTML = search + " (game)";
               resultli.appendChild(aTag);
-              searchResults.innerText = "";
+              searchResults.innerHTML = "";
               searchResults.appendChild(resultli);
             }
             else {
               let resultli = document.createElement('li');
               let aTag = document.createElement('a');
-              aTag.innerHTML = "No results found";
+              aTag.innerHTML = "No Games found";
               resultli.appendChild(aTag);
-              searchResults.innerText = "";
+              searchResults.innerHTML = "";
               searchResults.appendChild(resultli);
             }
           });
@@ -126,13 +131,19 @@ export default class SearchPage extends React.Component {
               let resultli = document.createElement('li');
               let aTag = document.createElement('a');
               aTag.setAttribute('href', "/#/user/" + search);
-              aTag.innerHTML = search;
+              aTag.innerHTML = search + " (user)";
               resultli.appendChild(aTag);
-              searchResults.innerText = "";
+              if (searchResults.innerText = "Loading...") {
+                searchResults.innerText = "";
+              }
               searchResults.appendChild(resultli);
             } else { searchResults.innerHTML = data.message; }
           });
 
+        }
+        else if (searchType == "Both") {
+          searchSteam(search, "Game");
+          searchSteam(search, "User");
         }
       });
     }
