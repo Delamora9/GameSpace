@@ -9,7 +9,7 @@ export default class HomePage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <label>Search a user or game:</label><br />
+          <h4>Search a user or game (case-sensitive)</h4><br />
           <span>Game search: </span>
           <input id="gameSearch" name="searchType" type="radio" /><br />
           <span id="userSearchLabel">User search: </span>

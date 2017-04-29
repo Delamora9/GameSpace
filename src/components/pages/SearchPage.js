@@ -8,7 +8,7 @@ export default class SearchPage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <span>Search a user or game:</span><br />
+          <h4>Search a user or game (case-sensitive)</h4><br />
           <span>Game search: </span>
           <input id="gameSearch" name="searchType" type="radio" /><br />
           <span id="userSearchLabel">User search: </span>
@@ -67,16 +67,17 @@ export default class SearchPage extends React.Component {
       let { query } = this.props.location;
       let { search } = query;
       let { searchType } = query;
+      console.log(searchType);
 
       if (search) {
         searchBar.value = search;
         searchBar.focus();
-        searchSteam(search);
+        searchSteam(search, searchType);
       }
     }
 
     // Display result from Steam API
-    function searchSteam(search) {
+    function searchSteam(search, searchType) {
       searchResults.innerHTML = "Loading...";
 
       let Steam = require('steam-webapi');
@@ -87,20 +88,52 @@ export default class SearchPage extends React.Component {
         if (err) return console.log(err);
 
         let steam = new Steam();
+        if (searchType == "Game") {
+          steam.getAppList({}, function(err, data) {
+            //console.log(data);
+            let gameList = data.applist.apps;
+            let gameID;
+            // Find the gameID    ****This is slow, any way to speed it up?****
+            for (let i = 0; i < gameList.length; i++) {
+              if (gameList[i].name === search) {
+                gameID = gameList[i].appid;
+              }
+            }
+            if (gameID != null) {
+              let resultli = document.createElement('li');
+              let aTag = document.createElement('a');
+              aTag.setAttribute('href', "/#/game/" + search);
+              aTag.innerHTML = search;
+              resultli.appendChild(aTag);
+              searchResults.innerText = "";
+              searchResults.appendChild(resultli);
+            }
+            else {
+              let resultli = document.createElement('li');
+              let aTag = document.createElement('a');
+              aTag.innerHTML = "No results found";
+              resultli.appendChild(aTag);
+              searchResults.innerText = "";
+              searchResults.appendChild(resultli);
+            }
+          });
+        }
+        else if (searchType == "User") {
+          // Retrieve the steam ID from a steam username/communityID
+          steam.resolveVanityURL({vanityurl: search}, function(err, data) {
+            // Display results
+            if (data.success == 1) {
+              let resultli = document.createElement('li');
+              let aTag = document.createElement('a');
+              aTag.setAttribute('href', "/#/user/" + search);
+              aTag.innerHTML = search;
+              resultli.appendChild(aTag);
+              searchResults.innerText = "";
+              searchResults.appendChild(resultli);
+            } else { searchResults.innerHTML = data.message; }
+          });
 
-        // Retrieve the steam ID from a steam username/communityID
-        steam.resolveVanityURL({vanityurl: search}, function(err, data) {
-          // Display results
-          if (data.success == 1) {
-            let resultli = document.createElement('li');
-            let aTag = document.createElement('a');
-            aTag.setAttribute('href', "/#/user/" + search);
-            aTag.innerHTML = search;
-            resultli.appendChild(aTag);
-            searchResults.innerText = "";
-            searchResults.appendChild(resultli);
-          } else { searchResults.innerHTML = data.message; }
-        });
+        }
       });
     }
 
