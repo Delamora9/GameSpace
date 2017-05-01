@@ -110,7 +110,9 @@ export default class SearchPage extends React.Component {
               aTag.setAttribute('href', "/#/game/" + search);
               aTag.innerHTML = search + " (game)";
               resultli.appendChild(aTag);
-              searchResults.innerHTML = "";
+              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+                searchResults.innerText = "";
+              }
               searchResults.appendChild(resultli);
             }
             else {
@@ -118,7 +120,9 @@ export default class SearchPage extends React.Component {
               let aTag = document.createElement('a');
               aTag.innerHTML = "No Games found";
               resultli.appendChild(aTag);
-              searchResults.innerHTML = "";
+              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+                searchResults.innerText = "";
+              }
               searchResults.appendChild(resultli);
             }
           });
@@ -133,7 +137,7 @@ export default class SearchPage extends React.Component {
               aTag.setAttribute('href', "/#/user/" + search);
               aTag.innerHTML = search + " (user)";
               resultli.appendChild(aTag);
-              if (searchResults.innerText = "Loading...") {
+              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
                 searchResults.innerText = "";
               }
               searchResults.appendChild(resultli);

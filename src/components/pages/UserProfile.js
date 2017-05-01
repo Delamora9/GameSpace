@@ -68,6 +68,7 @@ export default class UserProfile extends React.Component {
 
           // Create list of friends
           steam.getFriendList(data, function (err, friendData) {
+            friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
             friendsList.innerHTML = "";
             // If the user has friends (or has them publicly available)
             if (friendData != null && friendData.friendslist.friends.length != 0) {
@@ -187,18 +188,18 @@ export default class UserProfile extends React.Component {
     // Takes JSON data from Steam and creates a list of friends
     function buildFriendList(friendData, friendInfo) {
       console.log("building friend stuff");
-      friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
       let friendsli = document.createElement('li');
       let newFriend = friendInfo.players[0].personaname;
       let aTag = document.createElement('a');
-      aTag.addEventListener('click', function() {
-        newPath = "/user/" + friendInfo.players[0].personaname;
-        console.log(newPath);
-        hashHistory.push(newPath);
-      }, false);
       if (friendInfo.players[0].realname != null)
       {
         newFriend += " - " + friendInfo.players[0].realname;
+        aTag.style.cssText = "text-decoration: underline";
+        aTag.addEventListener('click', function() {
+          newPath = "/user/" + friendInfo.players[0].personaname;
+          console.log(newPath);
+          hashHistory.push(newPath);
+        }, false);
       }
       else {
         newFriend += " - Private";
@@ -219,6 +220,7 @@ export default class UserProfile extends React.Component {
       for (let i = 0; i < recentDisplayed; i++) {
         let recentli = document.createElement('li');
         let aTag = document.createElement('a');
+        aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click', function() {
           newPath = "/game/" + playedGamesData.games[i].name;
           console.log(newPath);
@@ -239,6 +241,7 @@ export default class UserProfile extends React.Component {
       for (let i = 0; i < ownedDisplayed; i++) {
         let ownedli = document.createElement('li');
         let aTag = document.createElement('a');
+        aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click',  function() {
           newPath = "/game/" + ownedGamesData.games[i].name;
           console.log(newPath);
