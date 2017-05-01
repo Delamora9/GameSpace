@@ -137,7 +137,11 @@ export default class UserProfile extends React.Component {
 
       for (let i = 0; i < recentDisplayed; i++) {
         let recentli = document.createElement('li');
-        recentli.innerHTML = playedGamesData.games[i].name;
+        let aTag = document.createElement('a');
+        aTag.setAttribute('href', "/#/game/" + playedGamesData.games[i].name);
+        //aTag.setAttribute('onClick', "window.location.reload(true)");
+        aTag.innerHTML = playedGamesData.games[i].name;
+        recentli.appendChild(aTag);
         gamesPlayedList.appendChild(recentli);
       }
     }
@@ -146,13 +150,14 @@ export default class UserProfile extends React.Component {
     function buildOwnedGamesList(ownedGamesData) {
       let numOwned = ownedGamesData.game_count;
       ownedTitle.innerHTML = "Owned: (" + numOwned + ")";
-
       let ownedDisplayed = numOwned;
       if (ownedDisplayed > 5) { ownedDisplayed = 5 }
-
       for (let i = 0; i < ownedDisplayed; i++) {
         let ownedli = document.createElement('li');
-        ownedli.innerHTML = ownedGamesData.games[i].name;
+        let aTag = document.createElement('a');
+        aTag.setAttribute('href', "/#/game/" + ownedGamesData.games[i].name);
+        aTag.innerHTML = ownedGamesData.games[i].name;
+        ownedli.appendChild(aTag);
         gamesOwnedList.appendChild(ownedli);
       }
     }
