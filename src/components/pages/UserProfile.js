@@ -1,5 +1,6 @@
 import React from 'react';
 const Steam = require('steam-webapi');
+import { hashHistory } from 'react-router';
 
 // Set global Steam API Key
 Steam.key = "36991C4777F98B19F85825A2368DE13A";
@@ -9,6 +10,8 @@ export default class UserProfile extends React.Component {
     return(
       <div>
         <h1>User Profile for {this.props.params.user}</h1>
+        <div id="basicInfo">
+        </div>
         <div id="divbody">
           <h3 id="friendsTitle">Friends:</h3>
           <ul id="friends">
@@ -28,6 +31,10 @@ export default class UserProfile extends React.Component {
   }
 
   componentDidMount() {
+    this.forceUpdate();
+  }
+
+  componentDidUpdate() {
     // Capture DOM elements
     let friendsList = document.getElementById("friends");
     let gamesPlayedList = document.getElementById("gamesPlayed");
@@ -35,10 +42,14 @@ export default class UserProfile extends React.Component {
     let friendsTitle = document.getElementById("friendsTitle");
     let recentTitle = document.getElementById("recentTitle");
     let ownedTitle = document.getElementById("ownedTitle");
+    let basicInfo = document.getElementById("basicInfo");
+    let newPath = "";
+    basicInfo.innerHTML = "";
+
 
     // Grab params from the URL
     const { params } = this.props
-
+    console.log(this.props.location);
     // Connect to Steam and retrieve player information
     Steam.ready(function(err) {
       if (err) return console.log(err);
@@ -50,18 +61,27 @@ export default class UserProfile extends React.Component {
         // data -> { steamid: '76561197968620915', success: 1 }
         if (data.success == 1) {
           let userSteamID = data.steamid;
+          data.steamids = userSteamID;
+          steam.getPlayerSummaries(data, function(err, profileInfo) {
+            buildUserData(profileInfo);
+          });
 
           // Create list of friends
           steam.getFriendList(data, function (err, friendData) {
-            if (friendData != null) {
-              // for (let i = 0; i < 5; i++)
-              // {
-                data.steamids = friendData.friendslist.friends[0].steamid;
+            friendsList.innerHTML = "";
+            // If the user has friends (or has them publicly available)
+            if (friendData != null && friendData.friendslist.friends.length != 0) {
+              let length;
+              // If there are more than 5 friends, only display 5; else display all
+              if (friendData.friendslist.friends.length > 5) { length = 5; console.log(length); }
+              else { length = friendData.friendslist.friends.length; console.log(length); }
+              for (let i = 0; i < length; i++)
+              {
+                data.steamids = friendData.friendslist.friends[i].steamid;
                 steam.getPlayerSummaries(data, function(err, friendInfo) {
-                  // userFriends["friend"+0] = friendInfo;
                   buildFriendList(friendData, friendInfo);
                 });
-              // }
+              }
 
             } else {
               let friendsli = document.createElement('li');
@@ -70,11 +90,10 @@ export default class UserProfile extends React.Component {
             }
           });
 
-
-
           // Create list of played games
           data.count = 5;
           steam.getRecentlyPlayedGames(data, function(err, playedGamesData) {
+            gamesPlayedList.innerHTML = "";
             if (playedGamesData != null) {
               buildPlayedGamesList(playedGamesData);
             } else {
@@ -89,6 +108,7 @@ export default class UserProfile extends React.Component {
           data.include_played_free_games = false;
           data.appids_filter = "";
           steam.getOwnedGames(data, function(err, ownedGamesData) {
+            gamesOwnedList.innerHTML = "";
             if (ownedGamesData != null) {
               buildOwnedGamesList(ownedGamesData);
             } else {
@@ -104,27 +124,88 @@ export default class UserProfile extends React.Component {
       });
     });//end Steam call
 
+    // function to convert unix time to regular(?) time
+    function convertTimeStamp(unixTime) {
+      let date = new Date(unixTime*1000),
+                  yyyy = date.getFullYear(),
+                  month = (date.getMonth() + 1),
+                  dd = ('0' + date.getDate()).slice(-2),
+                  hh = date.getHours(),
+                  min = ('0' + date.getMinutes()).slice(-2),
+                  time;
+      let mm;
+      if (month === 1) { mm = "January"; }
+      else if (month === 2) { mm = "February"; }
+      else if (month === 3) { mm = "March"; }
+      else if (month === 4) { mm = "April"; }
+      else if (month === 5) { mm = "May"; }
+      else if (month === 6) { mm = "June"; }
+      else if (month === 7) { mm = "July"; }
+      else if (month === 8) { mm = "August"; }
+      else if (month === 9) { mm = "September"; }
+      else if (month === 10) { mm = "October"; }
+      else if (month === 11) { mm = "November"; }
+      else { mm = "December"; }
+      time = mm + " " + dd + ", " + yyyy + " at " + hh + ":" + min;
+      return time;
+    }
+
+    function buildUserData(profileInfo) {
+      basicInfo.innerHtml = "";
+      // Display profile real name
+      if (profileInfo.players[0].realname != null) {
+        basicInfo.innerHTML += "Name: " + profileInfo.players[0].realname;
+      }
+      else {
+        basicInfo.innerHTML += "Name: Private";
+      }
+
+      // Display profile location
+      if (profileInfo.players[0].locstatecode != null && profileInfo.players[0].loccountrycode != null) {
+        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location: " + profileInfo.players[0].locstatecode;
+        basicInfo.innerHTML += ", " + profileInfo.players[0].loccountrycode;
+      }
+      else if (profileInfo.players[0].locstatecode == null && profileInfo.players[0].loccountrycode != null) {
+        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location (country): " + profileInfo.players[0].loccountrycode;
+      }
+      else if (profileInfo.players[0].locstatecode != null && profileInfo.players[0].loccountrycode == null) {
+        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location (state): " + profileInfo.players[0].locstatecode;
+      }
+      else {
+        basicInfo.innerHTML += "&nbsp;&nbsp;&nbspLocation: Unknown";
+      }
+
+      // Display profile last online
+      if (profileInfo.players[0].lastlogoff != null) {
+        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Last Online: " + convertTimeStamp(profileInfo.players[0].lastlogoff);
+      }
+      else {
+        basicInfo.innerHTML +="&nbsp;&nbsp;&nbsp;Never online, apparently.";
+      }
+    }
+
     // Takes JSON data from Steam and creates a list of friends
     function buildFriendList(friendData, friendInfo) {
-      // let numFriends = friendData.friendslist.friends.length;
+      console.log("building friend stuff");
       friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
-      // let displayedFriends = numFriends;
-      // if (numFriends > 5) { displayedFriends = 5 }
-      // for (let i = 0; i < 5; i++) {
-        let friendsli = document.createElement('li');
-        console.log(friendInfo);
-        let newFriend = friendInfo.players[0].personaname;
-        console.log(newFriend);
-        let aTag = document.createElement('a');
-        aTag.setAttribute('href', "/#/user/" + newFriend);
-        aTag.setAttribute('onClick', "window.location.reload(true)");
-        aTag.innerHTML = newFriend;
-        friendsli.appendChild(aTag);
-        // API call to get player information
-
-      //  friendsli.innerHTML = newFriend;
-        friendsList.appendChild(friendsli);
-      // }
+      let friendsli = document.createElement('li');
+      let newFriend = friendInfo.players[0].personaname;
+      let aTag = document.createElement('a');
+      aTag.addEventListener('click', function() {
+        newPath = "/user/" + friendInfo.players[0].personaname;
+        console.log(newPath);
+        hashHistory.push(newPath);
+      }, false);
+      if (friendInfo.players[0].realname != null)
+      {
+        newFriend += " - " + friendInfo.players[0].realname;
+      }
+      else {
+        newFriend += " - Private";
+      }
+      aTag.innerHTML = newFriend;
+      friendsli.appendChild(aTag);
+      friendsList.appendChild(friendsli);
     }
 
     // Takes JSON data from Steam and creates a list of played games
@@ -138,8 +219,11 @@ export default class UserProfile extends React.Component {
       for (let i = 0; i < recentDisplayed; i++) {
         let recentli = document.createElement('li');
         let aTag = document.createElement('a');
-        aTag.setAttribute('href', "/#/game/" + playedGamesData.games[i].name);
-        //aTag.setAttribute('onClick', "window.location.reload(true)");
+        aTag.addEventListener('click', function() {
+          newPath = "/game/" + playedGamesData.games[i].name;
+          console.log(newPath);
+          hashHistory.push(newPath);
+        }, false);
         aTag.innerHTML = playedGamesData.games[i].name;
         recentli.appendChild(aTag);
         gamesPlayedList.appendChild(recentli);
@@ -155,7 +239,11 @@ export default class UserProfile extends React.Component {
       for (let i = 0; i < ownedDisplayed; i++) {
         let ownedli = document.createElement('li');
         let aTag = document.createElement('a');
-        aTag.setAttribute('href', "/#/game/" + ownedGamesData.games[i].name);
+        aTag.addEventListener('click',  function() {
+          newPath = "/game/" + ownedGamesData.games[i].name;
+          console.log(newPath);
+          hashHistory.push(newPath);
+        }, false);
         aTag.innerHTML = ownedGamesData.games[i].name;
         ownedli.appendChild(aTag);
         gamesOwnedList.appendChild(ownedli);
