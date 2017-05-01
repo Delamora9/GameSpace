@@ -54,7 +54,15 @@ export default class UserProfile extends React.Component {
           // Create list of friends
           steam.getFriendList(data, function (err, friendData) {
             if (friendData != null) {
-              buildFriendList(friendData);
+              // for (let i = 0; i < 5; i++)
+              // {
+                data.steamids = friendData.friendslist.friends[0].steamid;
+                steam.getPlayerSummaries(data, function(err, friendInfo) {
+                  // userFriends["friend"+0] = friendInfo;
+                  buildFriendList(friendData, friendInfo);
+                });
+              // }
+
             } else {
               let friendsli = document.createElement('li');
               friendsli.innerHTML = 'None Available';
@@ -62,10 +70,11 @@ export default class UserProfile extends React.Component {
             }
           });
 
+
+
           // Create list of played games
           data.count = 5;
           steam.getRecentlyPlayedGames(data, function(err, playedGamesData) {
-            console.log(playedGamesData);
             if (playedGamesData != null) {
               buildPlayedGamesList(playedGamesData);
             } else {
@@ -80,7 +89,6 @@ export default class UserProfile extends React.Component {
           data.include_played_free_games = false;
           data.appids_filter = "";
           steam.getOwnedGames(data, function(err, ownedGamesData) {
-            console.log(ownedGamesData);
             if (ownedGamesData != null) {
               buildOwnedGamesList(ownedGamesData);
             } else {
@@ -97,18 +105,26 @@ export default class UserProfile extends React.Component {
     });//end Steam call
 
     // Takes JSON data from Steam and creates a list of friends
-    function buildFriendList(friendData) {
-      let numFriends = friendData.friendslist.friends.length;
-      friendsTitle.innerHTML = "Friends: (" + numFriends + ")";
-
-      let displayedFriends = numFriends;
-      if (numFriends > 5) { displayedFriends = 5 }
-
-      for (let i = 0; i < displayedFriends; i++) {
+    function buildFriendList(friendData, friendInfo) {
+      // let numFriends = friendData.friendslist.friends.length;
+      friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
+      // let displayedFriends = numFriends;
+      // if (numFriends > 5) { displayedFriends = 5 }
+      // for (let i = 0; i < 5; i++) {
         let friendsli = document.createElement('li');
-        friendsli.innerHTML = 'Steam ID: ' + friendData.friendslist.friends[i+1].steamid;
+        console.log(friendInfo);
+        let newFriend = friendInfo.players[0].personaname;
+        console.log(newFriend);
+        let aTag = document.createElement('a');
+        aTag.setAttribute('href', "/#/user/" + newFriend);
+        aTag.setAttribute('onClick', "window.location.reload(true)");
+        aTag.innerHTML = newFriend;
+        friendsli.appendChild(aTag);
+        // API call to get player information
+
+      //  friendsli.innerHTML = newFriend;
         friendsList.appendChild(friendsli);
-      }
+      // }
     }
 
     // Takes JSON data from Steam and creates a list of played games
