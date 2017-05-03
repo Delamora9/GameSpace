@@ -10,6 +10,11 @@ export default class GameProfile extends React.Component {
       <div>
         <h1>Game Profile for {this.props.params.game}</h1>
         <div id="divbody">
+          <h3>Achievements:</h3>
+          <ul id="achievements">
+          </ul>
+        </div>
+        <div id="divbody">
           <h3>Game News:</h3>
           <ul id="game-news">
           </ul>
@@ -21,6 +26,7 @@ export default class GameProfile extends React.Component {
   componentDidMount() {
     // Capture DOM elements
     let gameNews = document.getElementById('game-news');
+    let achievments = document.getElementById('achievements');
 
     // Grab params from the URL
     const { params } = this.props
@@ -34,7 +40,7 @@ export default class GameProfile extends React.Component {
 
         // Retrieve list of Apps and their ID
         steam.getAppList({}, function(err, data) {
-          //console.log(data);          
+          //console.log(data);
           let gameList = data.applist.apps;
           let gameID;
 
@@ -45,17 +51,35 @@ export default class GameProfile extends React.Component {
             }
           }
 
-          // Create list of game news
+          // Call Steam API for game content using the gameID
           if (gameID != null) {
+            steam.getGlobalAchievementPercentagesForApp({gameid: gameID}, function(err, achievementData) {
+              buildAchievementList(achievementData);
+            });
             steam.getNewsForApp({appid: gameID, count: 5}, function(err, newsData) {
               buildGameNewsList(newsData);
             });
           } else {
-            gameNews.innerHTML = 'Unable to find any game news';
+            gameNews.innerHTML = 'Unable to find the game matching your request';
           }
         });
       }
     });//end Steam call
+
+    // Takes JSON data from Steam and creates an achievment div
+    function buildAchievementList(achievementData) {
+      //console.log(achievementData);
+      let achievementItems = achievementData.achievementpercentages.achievements;
+
+      if (achievementData != null && achievementData != undefined) {
+        for (let i = 0; i < achievementItems.length; i++) {
+          let achievementLi = document.createElement('li');
+          let achievementName = achievementItems[i]['name'].replace(/_/g, ' '); //strip underscores from name
+          achievementLi.innerHTML =  achievementName + ' - ' + Math.round(achievementItems[i]['percent']) + '% of people have this Achievement';
+          achievements.appendChild(achievementLi);
+        }
+      } else { achievements.innerHTML = 'No achievements to show.'; }
+    }
 
     // Takes JSON data from Steam and creates a list of game news
     function buildGameNewsList(newsData) {
@@ -68,8 +92,8 @@ export default class GameProfile extends React.Component {
           newsLi.innerHTML = newsItems[i]['title'] + '<br>' + newsItems[i]['contents'];
           gameNews.appendChild(newsLi);
         }
-      } else { gameNews.innerHTML = 'No news'; }
+      } else { gameNews.innerHTML = 'No news to show.'; }
     }
-    
+
   }//end componentDidMount
 }//end GameProfile
