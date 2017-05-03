@@ -126,7 +126,8 @@ export default class UserProfile extends React.Component {
           })
         } else {
           // If the steamid is invalid direct user to ErrorPage
-          // Reirect to ErrorPage ************************************************************
+          let errorRedirect = "/error";
+          hashHistory.replace(errorRedirect);
         }
       });
     });//end Steam call

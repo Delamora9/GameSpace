@@ -19,6 +19,7 @@ ReactDOM.render(
       <Route path="results/" component={SearchPage}></Route>
       <Route path="user/:user" component={UserProfile}></Route>
       <Route path="game/:game" component={GameProfile}></Route>
+      <Route path="error" component={ErrorPage}></Route>
     </Route>
     <Route path="*" component={ErrorPage}></Route>
   </Router>,
