@@ -20,16 +20,20 @@ body {
 }
 
 header {
-    height: auto;
-    padding: 12px;
-    margin: 0;
-    background: #212d3a;
-    color: #9099a1;
-    font-size: 20pt;
-    font-family: sans-serif;
-    display: inline-flex;
-    width: 100%;
-  }
+  height: auto;
+  padding: 12px;
+  margin: 0;
+  background: #212d3a;
+  color: #9099a1;
+  font-size: 20pt;
+  font-family: sans-serif;
+  display: inline-flex;
+  width: 100%;
+}
+
+#userSearchLabel {
+  margin-right: 7px;
+}
 
 #navbar {
   margin-left: auto;
