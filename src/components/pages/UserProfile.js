@@ -54,7 +54,9 @@ export default class UserProfile extends React.Component {
 
     // Grab params from the URL
     const { params } = this.props
-    console.log(this.props.location);
+    let currentPath = this.props.location.pathname;
+    console.log(currentPath);
+
     // Connect to Steam and retrieve player information
     Steam.ready(function(err) {
       if (err) return console.log(err);
@@ -126,7 +128,7 @@ export default class UserProfile extends React.Component {
           })
         } else {
           // If the steamid is invalid direct user to ErrorPage
-          let errorRedirect = "/error";
+          let errorRedirect = currentPath + "/notfound";
           hashHistory.replace(errorRedirect);
         }
       });
