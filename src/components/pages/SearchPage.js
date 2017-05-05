@@ -72,90 +72,103 @@ export default class SearchPage extends React.Component {
       let { search } = query;
       let { searchType } = query;
 
-      // Refil search components
-      if (searchType == "Both") {
-        gameSearch.checked = true;
-        userSearch.checked = true;
-      } else if (searchType == "Game") { 
-        gameSearch.checked = true; 
-      } else if (searchType == "User") {
-        userSearch.checked = true;
-      }
+      // Refill search components
       searchBar.value = search;
       searchBar.focus();
 
-      searchSteam(search, searchType);
+      // Call proper searches and recheck boxes
+      if (searchType == "Both") {
+        gameSearch.checked = true;
+        userSearch.checked = true;
+        searchForGames(search);
+        searchForUsers(search);
+      } else if (searchType == "Game") { 
+        gameSearch.checked = true;
+        searchForGames(search);
+      } else if (searchType == "User") {
+        userSearch.checked = true;
+        searchForUsers(search);
+      }
     }
 
-    // Display result from Steam API
-    function searchSteam(search, searchType) {
+    // Search the Steam API for matching games
+    function searchForGames(search) {
       searchResults.innerHTML = "Loading...";
-
       let Steam = require('steam-webapi');
       Steam.key = "36991C4777F98B19F85825A2368DE13A";
 
-      // Update the page to display the query's results
       Steam.ready(function(err) {
         if (err) return console.log(err);
-
         let steam = new Steam();
-        if (searchType == "Game") {
-          steam.getAppList({}, function(err, data) {
-            //console.log(data);
-            let gameList = data.applist.apps;
-            let gameID;
-            // Find the gameID    ****This is slow, any way to speed it up?****
-            for (let i = 0; i < gameList.length; i++) {
-              if (gameList[i].name === search) {
-                gameID = gameList[i].appid;
-              }
-            }
-            if (gameID != null) {
-              let resultli = document.createElement('li');
-              let aTag = document.createElement('a');
-              aTag.setAttribute('href', "/#/game/" + search);
-              aTag.innerHTML = search + " (game)";
-              resultli.appendChild(aTag);
-              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
-                searchResults.innerText = "";
-              }
-              searchResults.appendChild(resultli);
-            }
-            else {
-              let resultli = document.createElement('li');
-              let aTag = document.createElement('a');
-              aTag.innerHTML = "No Games found";
-              resultli.appendChild(aTag);
-              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
-                searchResults.innerText = "";
-              }
-              searchResults.appendChild(resultli);
-            }
-          });
-        }
-        else if (searchType == "User") {
-          // Retrieve the steam ID from a steam username/communityID
-          steam.resolveVanityURL({vanityurl: search}, function(err, data) {
-            // Display results
-            if (data.success == 1) {
-              let resultli = document.createElement('li');
-              let aTag = document.createElement('a');
-              aTag.setAttribute('href', "/#/user/" + search);
-              aTag.innerHTML = search + " (user)";
-              resultli.appendChild(aTag);
-              if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
-                searchResults.innerText = "";
-              }
-              searchResults.appendChild(resultli);
-            } else { searchResults.innerHTML = data.message; }
-          });
-
-        }
-        else if (searchType == "Both") {
-          searchSteam(search, "Game");
-          searchSteam(search, "User");
-        }
+        // Retrieve list of games from steam and search through the data
+        steam.getAppList({}, function(err, data) {
+          displayGameResults(data, search);
+        });
       });
+    }
+
+    // Search the Steam API for matching users
+    function searchForUsers(search) {
+      searchResults.innerHTML = "Loading...";
+      let Steam = require('steam-webapi');
+      Steam.key = "36991C4777F98B19F85825A2368DE13A";
+
+      Steam.ready(function(err) {
+        if (err) return console.log(err);
+        let steam = new Steam();
+        // Retrieve the steam ID from a steam username/communityID
+        steam.resolveVanityURL({vanityurl: search}, function(err, data) {
+          displayUserResults(data, search);
+        });
+      });
+    }
+
+    // Takes JSON data containing list of games from Steam. Cross references with search and displays result
+    function displayGameResults(data, search) {
+      let gameList = data.applist.apps;
+      let gameID;
+      // Find the gameID
+      for (let i = 0; i < gameList.length; i++) {
+        if (gameList[i].name === search) {
+          gameID = gameList[i].appid;
+        }
+      }
+      if (gameID != null) {
+        let resultli = document.createElement('li');
+        let aTag = document.createElement('a');
+        aTag.setAttribute('href', "/#/game/" + search);
+        aTag.innerHTML = search + " (game)";
+        resultli.appendChild(aTag);
+        if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+          searchResults.innerText = "";
+        }
+        searchResults.appendChild(resultli);
+      }
+      else {
+        let resultli = document.createElement('li');
+        let aTag = document.createElement('a');
+        aTag.innerHTML = "No Games found";
+        resultli.appendChild(aTag);
+        if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+          searchResults.innerText = "";
+        }
+        searchResults.appendChild(resultli);
+      }
+    }
+
+    // Takes JSON data from user search on Steam and displays the result
+    function displayUserResults(data, search) {
+      if (data.success == 1) {
+        let resultli = document.createElement('li');
+        let aTag = document.createElement('a');
+        aTag.setAttribute('href', "/#/user/" + search);
+        aTag.innerHTML = search + " (user)";
+        resultli.appendChild(aTag);
+        if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+          searchResults.innerText = "";
+        }
+        searchResults.appendChild(resultli);
+      } else { searchResults.innerHTML = data.message; }
     }
 
   }//end componentDidUpdate

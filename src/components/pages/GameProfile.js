@@ -40,7 +40,6 @@ export default class GameProfile extends React.Component {
     Steam.ready(function(err) {
       if (err) return console.log(err);
       else {
-
         const steam = new Steam();
 
         // Retrieve list of Apps and their ID
