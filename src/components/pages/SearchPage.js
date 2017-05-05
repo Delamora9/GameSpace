@@ -8,13 +8,14 @@ export default class SearchPage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <h4>Search a user or game (case-sensitive)</h4><br />
+          <h4>Search a user or game (case-sensitive)</h4>
           <span>Game search: </span>
-          <input id="gameSearch" name="searchType" type="checkbox" value="gameSearch" /><br />
-          <span id="userSearchLabel">User search: </span>
-          <input id="userSearch" name="searchType" type="checkbox" value="userSearch" /><br />
+          <input id="gameSearch" type="checkbox" />
+          <span>   User search: </span>
+          <input id="userSearch" type="checkbox" />
+          <br />
           <input id="searchBar" type="text" />
-          <button id="searchButton" type="Submit">Submit</button>
+          <button id="searchButton">Submit</button>
         </form>
         <ul id="returnResults"></ul>
       </div>
@@ -66,6 +67,8 @@ export default class SearchPage extends React.Component {
   componentDidUpdate() {
     // Capture DOM elements
     let searchResults = document.getElementById("returnResults");
+    let gameSearch = document.getElementById("gameSearch");
+    let userSearch = document.getElementById("userSearch");
 
     // Get search value from URL query and search Steam
     if(this.props.location){
@@ -74,11 +77,19 @@ export default class SearchPage extends React.Component {
       let { searchType } = query;
       console.log(searchType);
 
-      if (search) {
-        searchBar.value = search;
-        searchBar.focus();
-        searchSteam(search, searchType);
+      // Refil search components
+      if (searchType == "Both") {
+        gameSearch.checked = true;
+        userSearch.checked = true;
+      } else if (searchType == "Game") { 
+        gameSearch.checked = true; 
+      } else if (searchType == "User") {
+        userSearch.checked = true;
       }
+      searchBar.value = search;
+      searchBar.focus();
+
+      searchSteam(search, searchType);
     }
 
     // Display result from Steam API

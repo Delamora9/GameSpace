@@ -1,6 +1,6 @@
 import React from 'react';
-const Steam = require('steam-webapi');
 import { hashHistory } from 'react-router';
+const Steam = require('steam-webapi');
 
 // Set global Steam API Key
 Steam.key = "36991C4777F98B19F85825A2368DE13A";
