@@ -31,7 +31,8 @@ export default class HomePage extends React.Component {
     searchButton.addEventListener('click', newQuery, false);
 
     //load SearchPage with the user's search input
-    function newQuery() {
+    function newQuery(e) {
+      e.preventDefault();
       let searchValue = searchBar.value;
       if (searchValue != "") {
         let newPath = "/results/?search=" + searchValue;
@@ -52,6 +53,6 @@ export default class HomePage extends React.Component {
         }
       }
     }
-  }
+  }//end componentDidUpdate
 
-}
+}//end HomePage

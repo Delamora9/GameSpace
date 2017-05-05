@@ -11,7 +11,7 @@ export default class SearchPage extends React.Component {
           <h4>Search a user or game (case-sensitive)</h4>
           <span>Game search: </span>
           <input id="gameSearch" type="checkbox" />
-          <span>   User search: </span>
+          <span>User search: </span>
           <input id="userSearch" type="checkbox" />
           <br />
           <input id="searchBar" type="text" />
@@ -34,32 +34,28 @@ export default class SearchPage extends React.Component {
 
     // Function to update the page with a new search query
     function newQuery(e) {
-      if (!userSearch.checked && !gameSearch.checked) {
-        e.preventDefault();
-        alert("Please select user or game filter");
-      }
-      else {
-        var Steam = require('steam-webapi');
-        let searchValue = searchBar.value;
-        if (searchValue) {
-          let newPath = "/results/?search=" + searchValue;
-          if (userSearch.checked && !gameSearch.checked) {
-            newPath += "&searchType=User";
-            hashHistory.push(newPath);
-          }
-          else if (gameSearch.checked && !userSearch.checked) {
-            newPath += "&searchType=Game";
-            hashHistory.push(newPath);
-          }
-          else if (userSearch.checked && gameSearch.checked)
-          {
-            newPath += "&searchType=Both";
-            hashHistory.push(newPath);
-          }
+      e.preventDefault();
+      let searchValue = searchBar.value;
+      if (searchValue != "") {
+        let newPath = "/results/?search=" + searchValue;
+        if (userSearch.checked && !gameSearch.checked) {
+          newPath += "&searchType=User";
+          hashHistory.push(newPath);
         }
-
+        else if (gameSearch.checked && !userSearch.checked) {
+          newPath += "&searchType=Game";
+          hashHistory.push(newPath);
+        }
+        else if (gameSearch.checked && userSearch.checked) {
+          newPath += "&searchType=Both";
+          hashHistory.push(newPath);
+        }
+        else {
+          alert("Please select one or both options");
+        }
       }
     }
+
     // Force componentDidUpdate to be called when SearchPage is first mounted
     this.forceUpdate();
   }
@@ -75,7 +71,6 @@ export default class SearchPage extends React.Component {
       let { query } = this.props.location;
       let { search } = query;
       let { searchType } = query;
-      console.log(searchType);
 
       // Refil search components
       if (searchType == "Both") {
