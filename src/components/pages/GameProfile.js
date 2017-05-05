@@ -71,14 +71,18 @@ export default class GameProfile extends React.Component {
       //console.log(achievementData);
       let achievementItems = achievementData.achievementpercentages.achievements;
 
-      if (achievementData != null && achievementData != undefined) {
+      if (achievementData != null && achievementData != undefined && achievementItems.length > 0) {
         for (let i = 0; i < achievementItems.length; i++) {
           let achievementLi = document.createElement('li');
           let achievementName = achievementItems[i]['name'].replace(/_/g, ' '); //strip underscores from name
           achievementLi.innerHTML =  achievementName + ' - ' + Math.round(achievementItems[i]['percent']) + '% of people have this Achievement';
           achievements.appendChild(achievementLi);
         }
-      } else { achievements.innerHTML = 'No achievements to show.'; }
+      } else {
+        let noAchivementsLi = document.createElement('li');
+        noAchivementsLi.innerHTML = 'No achievements to show.';
+        achievements.appendChild(noAchivementsLi);
+      }
     }
 
     // Takes JSON data from Steam and creates a list of game news
