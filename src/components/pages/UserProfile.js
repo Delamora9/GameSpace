@@ -74,6 +74,7 @@ export default class UserProfile extends React.Component {
 
           // Create list of friends
           steam.getFriendList(data, function (err, friendData) {
+            console.log(friendData);
             friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
             friendsList.innerHTML = "";
             // If the user has friends (or has them publicly available)
@@ -193,8 +194,18 @@ export default class UserProfile extends React.Component {
     // Takes JSON data from Steam and creates a list of friends
     function buildFriendList(friendData, friendInfo) {
       let friendsli = document.createElement('li');
-      let newFriend = friendInfo.players[0].personaname;
+      let newFriend = "";
       let aTag = document.createElement('a');
+      let urlprofile = friendInfo.players[0].profileurl.split('/');
+      let regex = new RegExp(/^\d+$/);
+      // Check for valid profileurl - better redirect
+      if (!regex.test(urlprofile[4])) {
+        newFriend = urlprofile[4] + " (profileurl)";
+      }
+      else {
+        newFriend = friendInfo.players[0].personaname + " (persona)";
+      }
+      // Allow link if profile not private
       if (friendInfo.players[0].realname != null)
       {
         newFriend += " - " + friendInfo.players[0].realname;
@@ -211,6 +222,7 @@ export default class UserProfile extends React.Component {
       friendsli.appendChild(aTag);
       friendsList.appendChild(friendsli);
     }
+
 
     // Takes JSON data from Steam and creates a list of played games
     function buildPlayedGamesList(playedGamesData) {
@@ -241,14 +253,16 @@ export default class UserProfile extends React.Component {
       let ownedDisplayed = numOwned;
       if (ownedDisplayed > 5) { ownedDisplayed = 5 }
       for (let i = 0; i < ownedDisplayed; i++) {
+        let rand = Math.floor(Math.random() * (numOwned));
+        console.log(rand);
         let ownedli = document.createElement('li');
         let aTag = document.createElement('a');
         aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click',  function() {
-          newPath = "/game/" + ownedGamesData.games[i].name;
+          newPath = "/game/" + ownedGamesData.games[rand].name;
           hashHistory.push(newPath);
         }, false);
-        aTag.innerHTML = ownedGamesData.games[i].name;
+        aTag.innerHTML = ownedGamesData.games[rand].name;
         ownedli.appendChild(aTag);
         gamesOwnedList.appendChild(ownedli);
       }
