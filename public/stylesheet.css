@@ -121,6 +121,10 @@ input {
   background-color: #9099a1;
 }
 
+#gameSearch {
+  margin-right: 20px;
+}
+
 button {
   padding: 5px;
   margin: 10px;

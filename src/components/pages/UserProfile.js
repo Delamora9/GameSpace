@@ -1,6 +1,6 @@
 import React from 'react';
-const Steam = require('steam-webapi');
 import { hashHistory } from 'react-router';
+const Steam = require('steam-webapi');
 
 // Set global Steam API Key
 Steam.key = "36991C4777F98B19F85825A2368DE13A";
@@ -47,9 +47,15 @@ export default class UserProfile extends React.Component {
     basicInfo.innerHTML = "";
 
 
+    // Set loading indicators
+    friendsList.innerText = "Loading...";
+    gamesPlayedList.innerText = "Loading...";
+    gamesOwnedList.innerText = "Loading...";
+
     // Grab params from the URL
     const { params } = this.props
-    console.log(this.props.location);
+    let currentPath = this.props.location.pathname;
+
     // Connect to Steam and retrieve player information
     Steam.ready(function(err) {
       if (err) return console.log(err);
@@ -74,16 +80,14 @@ export default class UserProfile extends React.Component {
             if (friendData != null && friendData.friendslist.friends.length != 0) {
               let length;
               // If there are more than 5 friends, only display 5; else display all
-              if (friendData.friendslist.friends.length > 5) { length = 5; console.log(length); }
-              else { length = friendData.friendslist.friends.length; console.log(length); }
-              for (let i = 0; i < length; i++)
-              {
+              if (friendData.friendslist.friends.length > 5) { length = 5; }
+              else { length = friendData.friendslist.friends.length; }
+              for (let i = 0; i < length; i++) {
                 data.steamids = friendData.friendslist.friends[i].steamid;
                 steam.getPlayerSummaries(data, function(err, friendInfo) {
                   buildFriendList(friendData, friendInfo);
                 });
               }
-
             } else {
               let friendsli = document.createElement('li');
               friendsli.innerHTML = 'None Available';
@@ -96,10 +100,11 @@ export default class UserProfile extends React.Component {
           steam.getRecentlyPlayedGames(data, function(err, playedGamesData) {
             gamesPlayedList.innerHTML = "";
             if (playedGamesData != null) {
+              gamesPlayedList.innerText = "";
               buildPlayedGamesList(playedGamesData);
             } else {
               let recentli = document.createElement('li');
-              recentli.innerHTML = 'None Available';
+              recentli.innerHTML = 'No Recently Played Games';
               gamesPlayedList.appendChild(recentli);
             }
           });
@@ -111,16 +116,18 @@ export default class UserProfile extends React.Component {
           steam.getOwnedGames(data, function(err, ownedGamesData) {
             gamesOwnedList.innerHTML = "";
             if (ownedGamesData != null) {
+              gamesOwnedList.innerText = "";
               buildOwnedGamesList(ownedGamesData);
             } else {
               let ownedli = document.createElement('li');
-              ownedli.innerHTML = 'None Available';
+              ownedli.innerHTML = 'No Owned Games';
               gamesOwnedList.appendChild(ownedli);
             }
           })
         } else {
           // If the steamid is invalid direct user to ErrorPage
-          // Reirect to ErrorPage ************************************************************
+          let errorRedirect = currentPath + "/notfound";
+          hashHistory.replace(errorRedirect);
         }
       });
     });//end Steam call
@@ -135,7 +142,7 @@ export default class UserProfile extends React.Component {
                   min = ('0' + date.getMinutes()).slice(-2),
                   time;
       let mm;
-      if (month === 1) { mm = "January"; }
+      if      (month === 1) { mm = "January"; }
       else if (month === 2) { mm = "February"; }
       else if (month === 3) { mm = "March"; }
       else if (month === 4) { mm = "April"; }
@@ -156,8 +163,7 @@ export default class UserProfile extends React.Component {
       // Display profile real name
       if (profileInfo.players[0].realname != null) {
         basicInfo.innerHTML += "Name: " + profileInfo.players[0].realname;
-      }
-      else {
+      } else {
         basicInfo.innerHTML += "Name: Private";
       }
 
@@ -179,15 +185,13 @@ export default class UserProfile extends React.Component {
       // Display profile last online
       if (profileInfo.players[0].lastlogoff != null) {
         basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Last Online: " + convertTimeStamp(profileInfo.players[0].lastlogoff);
-      }
-      else {
+      } else {
         basicInfo.innerHTML +="&nbsp;&nbsp;&nbsp;Never online, apparently.";
       }
     }
 
     // Takes JSON data from Steam and creates a list of friends
     function buildFriendList(friendData, friendInfo) {
-      console.log("building friend stuff");
       let friendsli = document.createElement('li');
       let newFriend = friendInfo.players[0].personaname;
       let aTag = document.createElement('a');
@@ -197,7 +201,6 @@ export default class UserProfile extends React.Component {
         aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click', function() {
           newPath = "/user/" + friendInfo.players[0].personaname;
-          console.log(newPath);
           hashHistory.push(newPath);
         }, false);
       }
@@ -223,7 +226,6 @@ export default class UserProfile extends React.Component {
         aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click', function() {
           newPath = "/game/" + playedGamesData.games[i].name;
-          console.log(newPath);
           hashHistory.push(newPath);
         }, false);
         aTag.innerHTML = playedGamesData.games[i].name;
@@ -244,7 +246,6 @@ export default class UserProfile extends React.Component {
         aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click',  function() {
           newPath = "/game/" + ownedGamesData.games[i].name;
-          console.log(newPath);
           hashHistory.push(newPath);
         }, false);
         aTag.innerHTML = ownedGamesData.games[i].name;

@@ -9,13 +9,14 @@ export default class HomePage extends React.Component {
       <div>
         <h1>Search</h1>
         <form>
-          <h4>Search a user or game (case-sensitive)</h4><br />
+          <h4>Search a user or game (case-sensitive)</h4>
           <span>Game search: </span>
-          <input id="gameSearch" name="searchType" type="checkbox" value="gameSearch"/><br />
-          <span id="userSearchLabel">User search: </span>
-          <input id="userSearch" name="searchType" type="checkbox" value="userSearch"/><br />
+          <input id="gameSearch" type="checkbox" defaultChecked />
+          <span>User search: </span>
+          <input id="userSearch" type="checkbox" defaultChecked />
+          <br />
           <input id="searchBar" type="text" />
-          <button id="searchButton" type="Submit">Submit</button>
+          <button id="searchButton">Submit</button>
         </form>
       </div>
     );
@@ -27,16 +28,14 @@ export default class HomePage extends React.Component {
     let searchButton = document.getElementById("searchButton");
     let userSearch = document.getElementById("userSearch");
     let gameSearch = document.getElementById("gameSearch");
-    console.log("Mounted...");
     searchButton.addEventListener('click', newQuery, false);
 
     //load SearchPage with the user's search input
-    function newQuery() {
+    function newQuery(e) {
+      e.preventDefault();
       let searchValue = searchBar.value;
-      console.log(searchValue);
       if (searchValue != "") {
         let newPath = "/results/?search=" + searchValue;
-        console.log(newPath);
         if (userSearch.checked && !gameSearch.checked) {
           newPath += "&searchType=User";
           hashHistory.push(newPath);
@@ -53,10 +52,7 @@ export default class HomePage extends React.Component {
           alert("Please select one or both options");
         }
       }
-      else {
-        console.log("no search value");
-      }
     }
-  }
+  }//end componentDidUpdate
 
-}
+}//end HomePage
