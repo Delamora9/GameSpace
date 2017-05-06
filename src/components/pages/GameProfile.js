@@ -23,6 +23,14 @@ export default class GameProfile extends React.Component {
     this.forceUpdate();
   }
 
+  shouldComponentUpdate(nextProps) {
+    let currentGame = this.props.params.game;
+    let newGame = nextProps.params.game;
+    console.log(currentGame, newGame);
+    console.log(currentGame == newGame);
+    return !(currentGame == newGame);
+  }
+
   componentDidUpdate() {
     // Capture DOM elements
     let gameTitle = document.getElementById('gameTitle');
