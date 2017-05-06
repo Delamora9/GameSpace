@@ -53,6 +53,6 @@ export default class HomePage extends React.Component {
         }
       }
     }
-  }//end componentDidUpdate
+  }//end componentDidMount
 
 }//end HomePage

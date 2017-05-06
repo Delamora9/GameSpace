@@ -34,6 +34,12 @@ export default class UserProfile extends React.Component {
     this.forceUpdate();
   }
 
+  shouldComponentUpdate(nextProps) {
+    let currentUser = this.props.params.user;
+    let newUser = nextProps.params.user;
+    return !(currentUser == newUser);
+  }
+
   componentDidUpdate() {
     // Capture DOM elements
     let friendsList = document.getElementById("friends");

@@ -59,6 +59,14 @@ export default class SearchPage extends React.Component {
     // Force componentDidUpdate to be called when SearchPage is first mounted
     this.forceUpdate();
   }
+  
+  shouldComponentUpdate(nextProps) {
+    let currentSearch = this.props.location.query.search;
+    let currentType = this.props.location.query.searchType;
+    let newSearch = nextProps.location.query.search;
+    let newType = nextProps.location.query.searchType;
+    return !(currentSearch == newSearch && currentType == newType);
+  }
 
   componentDidUpdate() {
     // Capture DOM elements
