@@ -8,12 +8,17 @@ module.exports = {
   ],
   devServer: {
     historyApiFallback: true,
-    host: 'localhost', 
+    host: 'localhost',
     port: 8081,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-    }
+    proxy: {
+           "/api": {
+             host: 'localhost',
+             target: "https://api.steampowered.com/",
+             pathRewrite: {"^/api/" : ""},
+             secure: false,
+             changeOrigin: true
+           }
+       }
   },
   module: {
     loaders: [
