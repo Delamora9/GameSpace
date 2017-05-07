@@ -132,6 +132,5 @@ export default class GameProfile extends React.Component {
   }//end componentDidUpdate
 
 
-  }//end componentDidMount
 
 }//end GameProfile
