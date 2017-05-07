@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import SearchPage from './pages/SearchPage.js';
 
 
-export default class HomePage extends React.Component {
+export default class Layout extends React.Component {
   render() {
     return(
         <div id="header">

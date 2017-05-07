@@ -11,6 +11,11 @@ export default class GameProfile extends React.Component {
       <div>
         <h1 id="gameTitle">Game Profile</h1>
         <div id="divbody">
+          <h3>Achievements:</h3>
+          <ul id="achievements">
+          </ul>
+        </div>
+        <div id="divbody">
           <h3>Game News:</h3>
           <ul id="game-news">
           </ul>
@@ -35,6 +40,7 @@ export default class GameProfile extends React.Component {
     // Capture DOM elements
     let gameTitle = document.getElementById('gameTitle');
     let gameNews = document.getElementById('game-news');
+    let achievments = document.getElementById('achievements');
 
     // Initialize the game profile page
     gameTitle.innerText = "Searching...";
@@ -52,7 +58,11 @@ export default class GameProfile extends React.Component {
 
         // Retrieve list of Apps and their ID
         steam.getAppList({}, function(err, data) {
+
           // Get list of games
+
+          //console.log(data);
+
           let gameList = data.applist.apps;
           let gameID;
 
@@ -63,21 +73,46 @@ export default class GameProfile extends React.Component {
             }
           }
 
-          // Create list of game news
+          // Call Steam API for game content using the gameID
           if (gameID != null) {
+
             gameTitle.innerText = "Game Profile for " + params.game;
             gameNews.innerHTML = "Loading";
+
+            steam.getGlobalAchievementPercentagesForApp({gameid: gameID}, function(err, achievementData) {
+              buildAchievementList(achievementData);
+            });
+
             steam.getNewsForApp({appid: gameID, count: 5}, function(err, newsData) {
               buildGameNewsList(newsData);
             });
           } else {
+
             // If the gameID didn't match anything in the Steam DataBase
             let errorRedirect = currentPath + "/notfound";
             hashHistory.replace(errorRedirect);
+
+            gameNews.innerHTML = 'Unable to find the game matching your request';
+
           }
         });
       }
     });//end Steam call
+
+    // Takes JSON data from Steam and creates an achievment div
+    function buildAchievementList(achievementData) {
+      //console.log(achievementData);
+      let achievementItems = achievementData.achievementpercentages.achievements;
+
+      if (achievementData != null && achievementData != undefined) {
+        for (let i = 0; i < achievementItems.length; i++) {
+          let achievementLi = document.createElement('li');
+          let achievementName = achievementItems[i]['name'].replace(/_/g, ' '); //strip underscores from name
+          achievementLi.innerHTML =  achievementName + ' - ' + Math.round(achievementItems[i]['percent']) + '% of people have this Achievement';
+          achievements.appendChild(achievementLi);
+        }
+      } else { achievements.innerHTML = 'No achievements to show.'; }
+    }
 
     // Takes JSON data from Steam and creates a list of game news
     function buildGameNewsList(newsData) {
@@ -91,8 +126,12 @@ export default class GameProfile extends React.Component {
           newsLi.innerHTML = newsItems[i]['title'] + '<br>' + newsItems[i]['contents'];
           gameNews.appendChild(newsLi);
         }
-      } else { gameNews.innerHTML = 'No news'; }
+      } else { gameNews.innerHTML = 'No news to show.'; }
     }
-    
+
   }//end componentDidUpdate
+
+
+  }//end componentDidMount
+
 }//end GameProfile
