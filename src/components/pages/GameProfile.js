@@ -1,9 +1,5 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
-const Steam = require('steam-webapi');
-
-// Set global Steam API Key
-Steam.key = "36991C4777F98B19F85825A2368DE13A";
 
 export default class GameProfile extends React.Component {
   render() {
@@ -50,54 +46,56 @@ export default class GameProfile extends React.Component {
     const { params } = this.props
     let currentPath = this.props.location.pathname;
 
-    // Connect to Steam and retrieve game information
-    Steam.ready(function(err) {
-      if (err) return console.log(err);
-      else {
-        const steam = new Steam();
-
-        // Retrieve list of Apps and their ID
-        steam.getAppList({}, function(err, data) {
-
-          // Get list of games
-
-          //console.log(data);
-
-          let gameList = data.applist.apps;
-          let gameID;
-
-          // Find the gameID    ****This is slow, any way to speed it up?****
-          for (let i = 0; i < gameList.length; i++) {
-            if (gameList[i].name === params.game) {
-              gameID = gameList[i].appid;
-            }
-          }
-
-          // Call Steam API for game content using the gameID
-          if (gameID != null) {
-
-            gameTitle.innerText = "Game Profile for " + params.game;
-            gameNews.innerHTML = "Loading";
-
-            steam.getGlobalAchievementPercentagesForApp({gameid: gameID}, function(err, achievementData) {
-              buildAchievementList(achievementData);
-            });
-
-            steam.getNewsForApp({appid: gameID, count: 5}, function(err, newsData) {
-              buildGameNewsList(newsData);
-            });
-          } else {
-
-            // If the gameID didn't match anything in the Steam DataBase
-            let errorRedirect = currentPath + "/notfound";
-            hashHistory.replace(errorRedirect);
-
-            gameNews.innerHTML = 'Unable to find the game matching your request';
-
-          }
-        });
+    fetch('api/http://api.steampowered.com/ISteamApps/GetAppList/v2').then(function(response) {
+      if (response.ok) {
+        return response.json();
       }
-    });//end Steam call
+      throw new Error(response.status);
+    }).then((data)=>{
+      let gameList = data.applist.apps;
+      let gameID;
+
+      // Find the gameID    ****This is slow, any way to speed it up?****
+      for (let i = 0; i < gameList.length; i++) {
+        if (gameList[i].name === params.game) {
+          gameID = gameList[i].appid;
+        }
+      }
+
+      // Call Steam API for game content using the gameID
+      if (gameID != null) {
+
+        gameTitle.innerText = "Game Profile for " + params.game;
+        gameNews.innerHTML = "Loading";
+
+        fetch('api/http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002?gameid=' + gameID).then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((achievementData)=>{
+          buildAchievementList(achievementData)
+        });
+
+        fetch('api/http://api.steampowered.com/ISteamNews/GetNewsForApp/v2?appid='+ gameID + '&count=5').then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((newsData)=>{
+          buildGameNewsList(newsData);
+        });
+      } else {
+
+        // If the gameID didn't match anything in the Steam DataBase
+        let errorRedirect = currentPath + "/notfound";
+        hashHistory.replace(errorRedirect);
+
+        gameNews.innerHTML = 'Unable to find the game matching your request';
+
+      }
+  });
+
 
     // Takes JSON data from Steam and creates an achievment div
     function buildAchievementList(achievementData) {

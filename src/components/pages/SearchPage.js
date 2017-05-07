@@ -1,7 +1,6 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
 
-
 export default class SearchPage extends React.Component {
   render() {
     return(

@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router';
 import { hashHistory } from 'react-router';
 
-fetch('api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=36991C4777F98B19F85825A2368DE13A&vanityurl=iamthewalrus').then(function(response) {
+fetch('api/http://api.steampowered.com/ISteamNews/GetNewsForApp/v2?appid=360830&count=5').then(function(response) {
   if (response.ok) {
     return response.json();
   }
   throw new Error(response.status);
-}).then((data)=>{
-  console.log("Fetch data ", data.response);
+}).then((newsData)=>{
+  console.log("Fetch data ", newsData);
 });
 
 export default class HomePage extends React.Component {
