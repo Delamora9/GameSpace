@@ -211,15 +211,18 @@ export default class UserProfile extends React.Component {
     function buildFriendList(friendData, friendInfo) {
       let friendsli = document.createElement('li');
       let newFriend = "";
+      let pathUrl = "";
       let aTag = document.createElement('a');
       let urlprofile = friendInfo.players[0].profileurl.split('/');
       let regex = new RegExp(/^\d+$/);
       // Check for valid profileurl - better redirect
       if (!regex.test(urlprofile[4])) {
         newFriend = urlprofile[4] + " (profileurl)";
+        pathUrl = urlprofile[4];
       }
       else {
         newFriend = friendInfo.players[0].personaname + " (persona)";
+        pathUrl = friendInfo.players[0].personaname;
       }
       // Allow link if profile not private
       if (friendInfo.players[0].realname != null)
@@ -227,12 +230,20 @@ export default class UserProfile extends React.Component {
         newFriend += " - " + friendInfo.players[0].realname;
         aTag.style.cssText = "text-decoration: underline";
         aTag.addEventListener('click', function() {
-          newPath = "/user/" + friendInfo.players[0].personaname;
+          newPath = "/user/" + pathUrl;
+          hashHistory.push(newPath);
+        }, false);
+      }
+      else if (friendInfo.players[0].realname == null && !regex.test(urlprofile[4])) {
+        newFriend += " - Private Name";
+        aTag.style.cssText = "text-decoration: underline";
+        aTag.addEventListener('click', function() {
+          newPath = "/user/" + pathUrl;
           hashHistory.push(newPath);
         }, false);
       }
       else {
-        newFriend += " - Private";
+        newFriend += " - Private Profile";
       }
       aTag.innerHTML = newFriend;
       friendsli.appendChild(aTag);
