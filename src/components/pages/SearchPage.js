@@ -1,7 +1,6 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
 
-
 export default class SearchPage extends React.Component {
   render() {
     return(
@@ -59,7 +58,7 @@ export default class SearchPage extends React.Component {
     // Force componentDidUpdate to be called when SearchPage is first mounted
     this.forceUpdate();
   }
-  
+
   shouldComponentUpdate(nextProps) {
     let currentSearch = this.props.location.query.search;
     let currentType = this.props.location.query.searchType;
@@ -90,7 +89,7 @@ export default class SearchPage extends React.Component {
         userSearch.checked = true;
         searchForGames(search);
         searchForUsers(search);
-      } else if (searchType == "Game") { 
+      } else if (searchType == "Game") {
         gameSearch.checked = true;
         searchForGames(search);
       } else if (searchType == "User") {
@@ -102,32 +101,26 @@ export default class SearchPage extends React.Component {
     // Search the Steam API for matching games
     function searchForGames(search) {
       searchResults.innerHTML = "Loading...";
-      let Steam = require('steam-webapi');
-      Steam.key = "36991C4777F98B19F85825A2368DE13A";
-
-      Steam.ready(function(err) {
-        if (err) return console.log(err);
-        let steam = new Steam();
-        // Retrieve list of games from steam and search through the data
-        steam.getAppList({}, function(err, data) {
-          displayGameResults(data, search);
-        });
+      fetch('api/http://api.steampowered.com/ISteamApps/GetAppList/v2').then(function(response) {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(response.status);
+      }).then((data)=>{
+        displayGameResults(data, search);
       });
     }
 
     // Search the Steam API for matching users
     function searchForUsers(search) {
       searchResults.innerHTML = "Loading...";
-      let Steam = require('steam-webapi');
-      Steam.key = "36991C4777F98B19F85825A2368DE13A";
-
-      Steam.ready(function(err) {
-        if (err) return console.log(err);
-        let steam = new Steam();
-        // Retrieve the steam ID from a steam username/communityID
-        steam.resolveVanityURL({vanityurl: search}, function(err, data) {
-          displayUserResults(data, search);
-        });
+      fetch('api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=36991C4777F98B19F85825A2368DE13A&vanityurl=' + search).then(function(response) {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(response.status);
+      }).then((data)=>{
+        displayUserResults(data.response, search);
       });
     }
 

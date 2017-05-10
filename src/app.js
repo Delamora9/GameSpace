@@ -12,6 +12,7 @@ import ErrorPage from './components/pages/ErrorPage.js';
 
 const app = document.getElementById('app');
 
+//Application Routing
 ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={Layout}>
