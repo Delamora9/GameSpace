@@ -47,6 +47,12 @@ button:hover {
   height: auto;
 }
 
+#errorPage {
+  font-size: 40pt;
+  text-align: center;
+  padding: 100px;
+}
+
 footer {
     height: 50px;
     padding: 12px;

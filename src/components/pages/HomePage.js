@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 import { hashHistory } from 'react-router';
 
 export default class HomePage extends React.Component {
@@ -38,20 +37,18 @@ export default class HomePage extends React.Component {
         if (userSearch.checked && !gameSearch.checked) {
           newPath += "&searchType=User";
           hashHistory.push(newPath);
-        }
-        else if (gameSearch.checked && !userSearch.checked) {
+        } else if (gameSearch.checked && !userSearch.checked) {
           newPath += "&searchType=Game";
           hashHistory.push(newPath);
-        }
-        else if (gameSearch.checked && userSearch.checked) {
+        } else if (gameSearch.checked && userSearch.checked) {
           newPath += "&searchType=Both";
           hashHistory.push(newPath);
-        }
-        else {
+        } else {
           alert("Please select one or both options");
         }
       }
     }
-  }//end componentDidMount
 
+  }//end componentDidMount
+  
 }//end HomePage

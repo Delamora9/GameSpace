@@ -23,10 +23,12 @@ export default class UserProfile extends React.Component {
   }
 
   componentDidMount() {
+    // Force componentDidUpdate to be called when SearchPage is first mounted
     this.forceUpdate();
   }
 
   shouldComponentUpdate(nextProps) {
+    // Only update page for new content
     let currentUser = this.props.params.user;
     let newUser = nextProps.params.user;
     return !(currentUser == newUser);
@@ -55,12 +57,12 @@ export default class UserProfile extends React.Component {
 
     // Steam API call URLs
     let steamKey = '36991C4777F98B19F85825A2368DE13A';
-    let userNameSearchURL = 'api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=' + steamKey + '&vanityurl=';
-    let userIdSearchURL = 'api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=' + steamKey + '&steamids=';
-    let friendSearchURL = 'api/http://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=' + steamKey + '&steamid=';
-    let playerSummarySearchURL = 'api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=' + steamKey + '&steamids=';
-    let recentlyPlayedGamesSearchURL = 'api/https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=' + steamKey + '&steamid=';
-    let ownedGamesSearchURL = 'api/https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=' + steamKey + '&input_json=%7B%22steamid%22%3A%22';
+    let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${steamKey}&vanityurl=`;
+    let userIdSearchURL = `api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${steamKey}&steamids=`;
+    let friendSearchURL = `api/http://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${steamKey}&steamid=`;
+    let playerSummarySearchURL = `api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${steamKey}&steamids=`;
+    let recentlyPlayedGamesSearchURL = `api/https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=${steamKey}&steamid=`;
+    let ownedGamesSearchURL = `api/https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${steamKey}&input_json=%7B%22steamid%22%3A%22`;
     let ownedGamesSearchFilter = '%22%2C%22include_appinfo%22%3Atrue%2C%22include_played_free_games%22%3Afalse%2C%22appids_filter%22%3A%22%22%7D';
 
     // Retrieve any user information from the Steam API
@@ -313,4 +315,5 @@ export default class UserProfile extends React.Component {
     }
 
   }//end componentDidMount
+
 }//end UserProfile

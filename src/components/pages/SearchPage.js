@@ -44,6 +44,8 @@ export default class SearchPage extends React.Component {
         } else if (gameSearch.checked && userSearch.checked) {
           newPath += "&searchType=Both";
           hashHistory.push(newPath);
+        } else {
+          alert("Please select one or both options");
         }
       }
     }
@@ -52,6 +54,7 @@ export default class SearchPage extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    // Only update page for new content
     let currentSearch = this.props.location.query.search;
     let currentType = this.props.location.query.searchType;
     let newSearch = nextProps.location.query.search;
@@ -77,7 +80,7 @@ export default class SearchPage extends React.Component {
     // Steam API call URLs
     let steamKey = '36991C4777F98B19F85825A2368DE13A';
     let getAppListURL = 'api/http://api.steampowered.com/ISteamApps/GetAppList/v2';
-    let userNameSearchURL = 'api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=' + steamKey + '&vanityurl=';
+    let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamKey}&vanityurl=`;
     
     // Call proper searches and recheck boxes
     if (searchType == "Both") {
@@ -163,4 +166,5 @@ export default class SearchPage extends React.Component {
     }
 
   }//end componentDidUpdate
+
 }//end SearchPage

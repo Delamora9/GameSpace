@@ -4,7 +4,7 @@ export default class ErrorPage extends React.Component {
   render() {
     return(
       <div>
-        <h1>Page not found</h1>
+        <h1 id="errorPage">Page not found</h1>
       </div>
     );
   }
