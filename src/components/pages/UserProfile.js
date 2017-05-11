@@ -6,21 +6,17 @@ export default class UserProfile extends React.Component {
     return(
       <div>
         <h1>User Profile for {this.props.params.user}</h1>
-        <div id="basicInfo">
-        </div>
+        <div id="basicInfo"></div>
         <div id="divbody">
           <h3 id="friendsTitle">Friends:</h3>
-          <ul id="friends">
-          </ul>
+          <ul id="friends"></ul>
         </div>
         <div id="divbody">
           <h3>Games:</h3>
           <h5 id="recentTitle">Recently Played:</h5>
-          <ul id="gamesPlayed">
-          </ul>
+          <ul id="gamesPlayed"></ul>
           <h5 id="ownedTitle">Owned:</h5>
-          <ul id="gamesOwned">
-          </ul>
+          <ul id="gamesOwned"></ul>
         </div>
       </div>
     );
@@ -45,9 +41,7 @@ export default class UserProfile extends React.Component {
     let recentTitle = document.getElementById("recentTitle");
     let ownedTitle = document.getElementById("ownedTitle");
     let basicInfo = document.getElementById("basicInfo");
-    let newPath = "";
     basicInfo.innerHTML = "";
-
 
     // Set loading indicators
     friendsList.innerText = "Loading...";
@@ -57,97 +51,107 @@ export default class UserProfile extends React.Component {
     // Grab params from the URL
     const { params } = this.props
     let currentPath = this.props.location.pathname;
+    let newPath = "";
 
+    // Steam API call URLs
+    let userNameSearchURL = 'api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=36991C4777F98B19F85825A2368DE13A&vanityurl=';
+    let userIdSearchURL = 'api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=36991C4777F98B19F85825A2368DE13A&steamids=';
+    let friendSearchURL = 'api/http://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=36991C4777F98B19F85825A2368DE13A&steamid=';
+    let playerSummarySearchURL = 'api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=36991C4777F98B19F85825A2368DE13A&steamids=';
+    let recentlyPlayedGamesSearchURL = 'api/https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=36991C4777F98B19F85825A2368DE13A&steamid=';
+    let ownedGamesSearchURL = 'api/https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=36991C4777F98B19F85825A2368DE13A&input_json=%7B%22steamid%22%3A%22';
+    let ownedGamesSearchFilter = '%22%2C%22include_appinfo%22%3Atrue%2C%22include_played_free_games%22%3Afalse%2C%22appids_filter%22%3A%22%22%7D';
 
-    fetch('api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=36991C4777F98B19F85825A2368DE13A&vanityurl=' + params.user).then(function(response) {
-            if (response.ok) {
-              return response.json();
-            }
-            throw new Error(response.status);
-          }).then((data)=>{
-            if (data.response.success == 1) {
-              let userSteamID = data.response.steamid;
-              data.steamids = userSteamID;
-              fetch('api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=36991C4777F98B19F85825A2368DE13A&steamids=' + userSteamID).then(function(response) {
+    // Retrieve any user information from the Steam API
+    fetch(userNameSearchURL + params.user).then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(response.status);
+    }).then((data) => {
+      if (data.response.success == 1) {
+        let userSteamID = data.response.steamid;
+        data.steamids = userSteamID;
+        fetch(userIdSearchURL + userSteamID).then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((profileInfo) => {
+          buildUserData(profileInfo.response);
+        });
+
+        // Create list of friends
+        fetch(friendSearchURL + userSteamID).then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((friendData) => {
+          friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
+          friendsList.innerHTML = "";
+          // If the user has friends (or has them publicly available)
+          if (friendData != null && friendData.friendslist.friends.length != 0) {
+            let length;
+            // If there are more than 5 friends, only display 5; else display all
+            if (friendData.friendslist.friends.length > 5) { length = 5; }
+            else { length = friendData.friendslist.friends.length; }
+            for (let i = 0; i < length; i++) {
+              fetch(playerSummarySearchURL + friendData.friendslist.friends[i].steamid).then(function(response) {
                 if (response.ok) {
                   return response.json();
                 }
                 throw new Error(response.status);
-              }).then((profileInfo)=>{
-                buildUserData(profileInfo.response);
-              });
-
-              // Create list of friends
-              fetch('api/http://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=36991C4777F98B19F85825A2368DE13A&steamid='+ userSteamID).then(function(response) {
-                if (response.ok) {
-                  return response.json();
-                }
-                throw new Error(response.status);
-              }).then((friendData)=>{
-                friendsTitle.innerHTML = "Friends: (" + friendData.friendslist.friends.length + ")";
-                friendsList.innerHTML = "";
-                // If the user has friends (or has them publicly available)
-                if (friendData != null && friendData.friendslist.friends.length != 0) {
-                  let length;
-                  // If there are more than 5 friends, only display 5; else display all
-                  if (friendData.friendslist.friends.length > 5) { length = 5; }
-                  else { length = friendData.friendslist.friends.length; }
-                  for (let i = 0; i < length; i++) {
-                    fetch('api/http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=36991C4777F98B19F85825A2368DE13A&steamids=' + friendData.friendslist.friends[i].steamid).then(function(response) {
-                      if (response.ok) {
-                        return response.json();
-                      }
-                      throw new Error(response.status);
-                    }).then((friendInfo)=>{
-                      buildFriendList(friendData, friendInfo.response);
-                    });
-                  }
-                } else {
-                  let friendsli = document.createElement('li');
-                  friendsli.innerHTML = 'None Available';
-                  friendsList.appendChild(friendsli);
-                }
-              });
-
-              // Create list of played games
-              fetch('api/https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=36991C4777F98B19F85825A2368DE13A&steamid=' + userSteamID +'&count=5').then(function(response) {
-                if (response.ok) {
-                  return response.json();
-                }
-                throw new Error(response.status);
-              }).then((playedGamesData)=>{
-                gamesPlayedList.innerHTML = "";
-                if (playedGamesData != null) {
-                  gamesPlayedList.innerText = "";
-                  buildPlayedGamesList(playedGamesData.response);
-                } else {
-                  let recentli = document.createElement('li');
-                  recentli.innerHTML = 'No Recently Played Games';
-                  gamesPlayedList.appendChild(recentli);
-                }
-              });
-
-              // Create list of owned games
-              fetch('api/https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=36991C4777F98B19F85825A2368DE13A&input_json=%7B%22steamid%22%3A%22' + userSteamID +'%22%2C%22include_appinfo%22%3Atrue%2C%22include_played_free_games%22%3Afalse%2C%22appids_filter%22%3A%22%22%7D').then(function(response) {
-                if (response.ok) {
-                  return response.json();
-                }
-                throw new Error(response.status);
-              }).then((ownedGamesData)=>{
-                console.log("Owned games ", ownedGamesData.response);
-                gamesOwnedList.innerHTML = "";
-                if (ownedGamesData != null) {
-                  gamesOwnedList.innerText = "";
-                  buildOwnedGamesList(ownedGamesData.response);
-                } else {
-                  let ownedli = document.createElement('li');
-                  ownedli.innerHTML = 'No Owned Games';
-                  gamesOwnedList.appendChild(ownedli);
-                }
+              }).then((friendInfo)=>{
+                buildFriendList(friendData, friendInfo.response);
               });
             }
+          } else {
+            let friendsli = document.createElement('li');
+            friendsli.innerHTML = 'None Available';
+            friendsList.appendChild(friendsli);
+          }
+        });
 
-          });
+        // Create list of played games
+        fetch(recentlyPlayedGamesSearchURL + userSteamID +'&count=5').then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((playedGamesData)=>{
+          gamesPlayedList.innerHTML = "";
+          if (playedGamesData != null) {
+            gamesPlayedList.innerText = "";
+            buildPlayedGamesList(playedGamesData.response);
+          } else {
+            let recentli = document.createElement('li');
+            recentli.innerHTML = 'No Recently Played Games';
+            gamesPlayedList.appendChild(recentli);
+          }
+        });
+
+        // Create list of owned games
+        fetch(ownedGamesSearchURL + userSteamID + ownedGamesSearchFilter).then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.status);
+        }).then((ownedGamesData)=>{
+          console.log("Owned games ", ownedGamesData.response);
+          gamesOwnedList.innerHTML = "";
+          if (ownedGamesData != null) {
+            gamesOwnedList.innerText = "";
+            buildOwnedGamesList(ownedGamesData.response);
+          } else {
+            let ownedli = document.createElement('li');
+            ownedli.innerHTML = 'No Owned Games';
+            gamesOwnedList.appendChild(ownedli);
+          }
+        });
+      }
+
+    });
 
     // function to convert unix time to regular(?) time
     function convertTimeStamp(unixTime) {
@@ -177,33 +181,36 @@ export default class UserProfile extends React.Component {
 
     function buildUserData(profileInfo) {
       basicInfo.innerHtml = "";
+
       // Display profile real name
       if (profileInfo.players[0].realname != null) {
         basicInfo.innerHTML += "Name: " + profileInfo.players[0].realname;
       } else {
         basicInfo.innerHTML += "Name: Private";
       }
+      basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;";
 
       // Display profile location
       if (profileInfo.players[0].locstatecode != null && profileInfo.players[0].loccountrycode != null) {
-        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location: " + profileInfo.players[0].locstatecode;
+        basicInfo.innerHTML += "Location: " + profileInfo.players[0].locstatecode;
         basicInfo.innerHTML += ", " + profileInfo.players[0].loccountrycode;
       }
       else if (profileInfo.players[0].locstatecode == null && profileInfo.players[0].loccountrycode != null) {
-        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location (country): " + profileInfo.players[0].loccountrycode;
+        basicInfo.innerHTML += "Location (country): " + profileInfo.players[0].loccountrycode;
       }
       else if (profileInfo.players[0].locstatecode != null && profileInfo.players[0].loccountrycode == null) {
-        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Location (state): " + profileInfo.players[0].locstatecode;
+        basicInfo.innerHTML += "Location (state): " + profileInfo.players[0].locstatecode;
       }
       else {
-        basicInfo.innerHTML += "&nbsp;&nbsp;&nbspLocation: Unknown";
+        basicInfo.innerHTML += "Location: Unknown";
       }
+      basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;";
 
       // Display profile last online
       if (profileInfo.players[0].lastlogoff != null) {
-        basicInfo.innerHTML += "&nbsp;&nbsp;&nbsp;Last Online: " + convertTimeStamp(profileInfo.players[0].lastlogoff);
+        basicInfo.innerHTML += "Last Online: " + convertTimeStamp(profileInfo.players[0].lastlogoff);
       } else {
-        basicInfo.innerHTML +="&nbsp;&nbsp;&nbsp;Never online, apparently.";
+        basicInfo.innerHTML +="Never online, apparently.";
       }
     }
 
