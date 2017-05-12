@@ -72,7 +72,7 @@ export default class SearchPage extends React.Component {
     let { query } = this.props.location;
     let { search } = query;
     let { searchType } = query;
-
+    
     // Refill search components
     searchBar.value = search;
     searchBar.focus();
@@ -81,7 +81,7 @@ export default class SearchPage extends React.Component {
     let steamKey = '36991C4777F98B19F85825A2368DE13A';
     let getAppListURL = 'api/http://api.steampowered.com/ISteamApps/GetAppList/v2';
     let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamKey}&vanityurl=`;
-    
+
     // Call proper searches and recheck boxes
     if (searchType == "Both") {
       gameSearch.checked = true;
@@ -136,7 +136,7 @@ export default class SearchPage extends React.Component {
         }
       }
       if (gameID != null) {
-        aTag.setAttribute('href', "/#/game/" + gameID);
+        aTag.setAttribute('href', "/#/game/" + search);
         aTag.innerHTML = search + " (game)";
         resultli.appendChild(aTag);
         if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML)
@@ -152,9 +152,9 @@ export default class SearchPage extends React.Component {
 
     // Takes JSON data from user search on Steam and displays the result
     function displayUserResults(data, search) {
+      let resultli = document.createElement('li');
+      let aTag = document.createElement('a');
       if (data.success == 1) {
-        let resultli = document.createElement('li');
-        let aTag = document.createElement('a');
         aTag.setAttribute('href', "/#/user/" + search);
         aTag.innerHTML = search + " (user)";
         resultli.appendChild(aTag);
@@ -162,7 +162,13 @@ export default class SearchPage extends React.Component {
           searchResults.innerText = "";
         }
         searchResults.appendChild(resultli);
-      } else { searchResults.innerHTML = data.message; }
+      } else {
+        if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+          searchResults.innerText = "";
+        }
+        resultli.innerHTML = data.message + " in users";
+        searchResults.appendChild(resultli);
+      }
     }
 
   }//end componentDidUpdate

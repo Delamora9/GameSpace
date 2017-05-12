@@ -34,11 +34,12 @@ export default class GameProfile extends React.Component {
     // Capture DOM elements
     let gameTitle = document.getElementById('gameTitle');
     let gameNews = document.getElementById('game-news');
-    let achievments = document.getElementById('achievements');
+    let achievements = document.getElementById('achievements');
 
-    // Initialize the game profile page
+    // Loading Indicators
     gameTitle.innerText = "Searching...";
-    gameNews.innerHTML = "";
+    gameNews.innerText = "Loading...";
+    achievements.innerText = "Loading...";
 
     // Grab params from the URL
     const { params } = this.props
@@ -67,6 +68,7 @@ export default class GameProfile extends React.Component {
       }
       // Call Steam API for game content using the gameID
       if (gameID != null) {
+        gameTitle.innerText = "Game Profile for " + params.game;
         getGameData(gameID);
       } else {
         // If the gameID didn't match anything in the Steam DataBase
@@ -77,8 +79,7 @@ export default class GameProfile extends React.Component {
 
     // Takes a gameID and searches Steam for game's achievements and news
     function getGameData(gameID) {
-      gameTitle.innerText = "Game Profile for " + params.game;
-      gameNews.innerHTML = "Loading";
+
       // Search for Achievements
       fetch(getAchievementsURL + gameID).then(function(response) {
         if (response.ok) {
@@ -103,6 +104,7 @@ export default class GameProfile extends React.Component {
     function buildAchievementList(achievementData) {
       let achievementItems = achievementData.achievementpercentages.achievements;
       if (achievementData != null && achievementData != undefined && achievementItems.length > 0) {
+        achievements.innerHTML = "";
         for (let i = 0; i < achievementItems.length; i++) {
           let achievementLi = document.createElement('li');
           let achievementName = achievementItems[i]['name'].replace(/_/g, ' '); //strip underscores from name
@@ -110,6 +112,7 @@ export default class GameProfile extends React.Component {
           achievements.appendChild(achievementLi);
         }
       } else {
+        achievements.innerHTML = "";
         let noAchivementsLi = document.createElement('li');
         noAchivementsLi.innerHTML = 'No achievements to show.';
         achievements.appendChild(noAchivementsLi);
@@ -126,8 +129,11 @@ export default class GameProfile extends React.Component {
           newsLi.innerHTML = newsItems[i]['title'] + '<br>' + newsItems[i]['contents'];
           gameNews.appendChild(newsLi);
         }
-      } else { 
-        gameNews.innerHTML = 'No news to show.';
+      } else {
+        gameNews.innerHTML = "";
+        let noGameNewsLi = document.createElement('li');
+        noGameNewsLi.innerHTML = 'No game news to show.';
+        gameNews.appendChild(noGameNewsLi);
       }
     }
 
