@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router';
-import SearchPage from './pages/SearchPage.js';
-
 
 export default class Layout extends React.Component {
   render() {
