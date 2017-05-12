@@ -202,6 +202,7 @@ export default class UserProfile extends React.Component {
         }, false);
       } else {
         newFriend += " - Private Profile";
+        aTag.setAttribute('style', "color: black");
       }
       aTag.innerHTML = newFriend;
       friendsli.appendChild(aTag);
