@@ -1,39 +1,22 @@
 {
   "name": "GameSpace",
   "version": "1.0.0",
+  "description": "Implements a quick steam search of users and games in one SPA",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --hot --inline",
     "unit-test": "karma start karma.conf.js",
-    "coverage": "npm test -- --coverage",
     "dev": "npm run webpack-dev-server --progress --watch",
     "build": "webpack"
   },
-  "jest": {
-    "moduleDirectories": [
-      "src",
-      "node_modules"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/fileMock.js",
-      "^components$": "<rootDir>/test/componentsMock.js"
-    }
-  },
+  "author": ["Christopher Franklyn", "Keith Cissell", "Jess Geiger", "River Ginther", "Nick Delamora"],
+  "license": "Apache-2.0",
   "devDependencies": {
-    "astrolabe": "^0.3.6",
     "babel-core": "^6.21.0",
-    "babel-eslint": "^7.1.1",
-    "babel-jest": "^19.0.0",
     "babel-loader": "^6.2.10",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
-    "babel-plugin-transform-react-remove-prop-types": "^0.3.0",
-    "babel-preset-env": "^1.2.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.16.0",
-    "babel-preset-stage-1": "^6.16.0",
-    "enzyme": "^2.8.2",
-    "express": "^4.15.2",
-    "html-webpack-plugin": "^2.26.0",
+    "history": "3.0.0",
     "jasmine-core": "^2.5.2",
     "karma": "^1.6.0",
     "karma-babel-preprocessor": "^6.0.1",
@@ -41,24 +24,12 @@
     "karma-jasmine": "^1.1.0",
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.3",
-    "opn-cli": "^3.1.0",
-    "raw-loader": "^0.5.1",
+    "react": "^15.4.1",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.5.4",
-    "react-test-renderer": "^15.5.4",
-    "request": "^2.81.0",
-    "webdriverio": "^4.7.1",
-    "webpack": "^2.2.1",
-    "webpack-dev-middleware": "^1.10.1",
-    "webpack-dev-server": "^2.3.0"
-  },
-  "dependencies": {
-    "body-parser": "^1.17.1",
-    "history": "3.0.0",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-modal": "^1.6.5",
     "react-router": "^3.0.0",
-    "steam-webapi": "^0.6.5"
+    "react-test-renderer": "^15.5.4",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
   }
 }
