@@ -72,7 +72,7 @@ export default class SearchPage extends React.Component {
     let { query } = this.props.location;
     let { search } = query;
     let { searchType } = query;
-
+    
     // Refill search components
     searchBar.value = search;
     searchBar.focus();
@@ -152,9 +152,9 @@ export default class SearchPage extends React.Component {
 
     // Takes JSON data from user search on Steam and displays the result
     function displayUserResults(data, search) {
+      let resultli = document.createElement('li');
+      let aTag = document.createElement('a');
       if (data.success == 1) {
-        let resultli = document.createElement('li');
-        let aTag = document.createElement('a');
         aTag.setAttribute('href', "/#/user/" + search);
         aTag.innerHTML = search + " (user)";
         resultli.appendChild(aTag);
@@ -162,7 +162,13 @@ export default class SearchPage extends React.Component {
           searchResults.innerText = "";
         }
         searchResults.appendChild(resultli);
-      } else { searchResults.innerHTML = data.message; }
+      } else {
+        if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML) {
+          searchResults.innerText = "";
+        }
+        resultli.innerHTML = data.message + " in users";
+        searchResults.appendChild(resultli);
+      }
     }
 
   }//end componentDidUpdate
