@@ -81,7 +81,7 @@ export default class SearchPage extends React.Component {
     let steamKey = '36991C4777F98B19F85825A2368DE13A';
     let getAppListURL = 'api/http://api.steampowered.com/ISteamApps/GetAppList/v2';
     let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamKey}&vanityurl=`;
-    
+
     // Call proper searches and recheck boxes
     if (searchType == "Both") {
       gameSearch.checked = true;
@@ -136,7 +136,7 @@ export default class SearchPage extends React.Component {
         }
       }
       if (gameID != null) {
-        aTag.setAttribute('href', "/#/game/" + gameID);
+        aTag.setAttribute('href', "/#/game/" + search);
         aTag.innerHTML = search + " (game)";
         resultli.appendChild(aTag);
         if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML)
