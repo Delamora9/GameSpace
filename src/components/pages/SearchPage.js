@@ -136,7 +136,7 @@ export default class SearchPage extends React.Component {
         }
       }
       if (gameID != null) {
-        aTag.setAttribute('href', "/#/game/" + gameID);
+        aTag.setAttribute('href', "/#/game/" + search);
         aTag.innerHTML = search + " (game)";
         resultli.appendChild(aTag);
         if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML)

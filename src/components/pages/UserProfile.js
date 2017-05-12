@@ -152,7 +152,8 @@ export default class UserProfile extends React.Component {
         friendsTitle.innerHTML = "Friends: (" + numFriends + ")";
         if (numFriends > 5) displayedFriends = 5;
         for (let i = 0; i < displayedFriends; i++) {
-          fetch(playerSummarySearchURL + friendData.friendslist.friends[i].steamid).then(function(response) {
+          fetch(playerSummarySearchURL + friendData.friendslist.friends[i].steamid)
+          .then(function(response) {
             if (response.ok) {
               return response.json();
             }
