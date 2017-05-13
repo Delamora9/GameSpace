@@ -9,7 +9,9 @@
 The project should be running on port 8081 after those two commands.
 
 ### Running the tests:
-1. Unit Tests: karma start (must have karma-cli)
+1. Unit Tests: 
+    - npm install -g karma-cli
+    - karma start
 2. E2E Tests:
     - npm install -g protractor
     - webdriver-manager update
