@@ -72,7 +72,7 @@ export default class SearchPage extends React.Component {
     let { query } = this.props.location;
     let { search } = query;
     let { searchType } = query;
-    
+
     // Refill search components
     searchBar.value = search;
     searchBar.focus();
@@ -142,8 +142,8 @@ export default class SearchPage extends React.Component {
         if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML)
           searchResults.innerText = "";
       } else {
-        aTag.innerHTML = "No Games found";
-        resultli.appendChild(aTag);
+        resultli.innerHTML = "No Games Found";
+        resultli.setAttribute('style', "color: black");
         if (searchResults.innerText == "Loading..." || searchResults.innerText == aTag.innerHTML)
           searchResults.innerText = "";
       }
@@ -167,6 +167,7 @@ export default class SearchPage extends React.Component {
           searchResults.innerText = "";
         }
         resultli.innerHTML = data.message + " in users";
+        resultli.setAttribute('style', "color: black");
         searchResults.appendChild(resultli);
       }
     }
