@@ -69,7 +69,7 @@ export default class UserProfile extends React.Component {
     fetch(userNameSearchURL + params.user).then(function(response) {
       if (response.ok) {
         return response.json();
-      } 
+      }
       throw new Error(response.status);
     }).then((data) => {
       if (data.response.success == 1) {
