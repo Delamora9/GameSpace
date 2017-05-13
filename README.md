@@ -21,8 +21,8 @@ The GameSpace web application provides a way for people to access information in
 
 ### App Views
 The home page of our application is an empty version of the search view. The top navbar and footer will remain on the page for all views.
-The 'Home' link in the navbar will return you to the home page, while the 'User Profile' and 'Game Profile' links will take you to example
-user or game's profile page respectively.
+The 'Home' link in the navbar will return you to the home page, while the 'vTopher (User)' and 'Yooka-Laylee (Game)' links will take you to an example
+user and game profile page respectively.
 
 1. __Search View__
     - The search page gives the user the ability to search the Steam API for users or games
