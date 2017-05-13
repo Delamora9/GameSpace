@@ -3,21 +3,21 @@
 
 ## Running the Project ##
 ### Running the project:
- * npm install
- * npm start
+ - npm install
+ - npm start
 
 The project should be running on port 8081 after those two commands.
 
 ### Running the tests:
  1. Unit Tests: karma start (must have karma-cli)
  2. E2E Tests:
-   * npm install -g protractor
-   * webdriver-manager update
-   * webdriver-manager start
-   * In a separate window: protractor protractor.conf.js
+   - npm install -g protractor
+   - webdriver-manager update
+   - webdriver-manager start
+   - In a separate window: protractor protractor.conf.js
 
 ## Details on GameSpace ##
-The GameSpace web application provides a way for people to access information in Steam's database in a visual and user friendly way. You can search for users and games within Steam and look checkout different information about them. The Steam data is retrieved using the Steam Web API (https://developer.valvesoftware.com/wiki/Steam_Web_API). This API provides a way to connect to the database through HTTP. Our application retrieves JSON data through this API and displays it to the user. GameSpace is a single page web application using React libraries and components which currently runs on a webpack dev server.
+The GameSpace web application provides a way for people to access information in Steam's database in a visual and user friendly way. You can search for users and games within Steam and look checkout different information about them. The Steam data is retrieved using the Steam Web API ( https://developer.valvesoftware.com/wiki/Steam_Web_API ). This API provides a way to connect to the database through HTTP. Our application retrieves JSON data through this API and displays it to the user. GameSpace is a single page web application using React libraries and components which currently runs on a webpack dev server.
 
 ### App Views
 The home page of our application is an empty version of the search view. The top navbar and footer will remain on the page for all views.
