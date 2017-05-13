@@ -50,7 +50,11 @@ user or game's profile page respectively.
 
 ## Contributors
 __Keith Cissell__ -         https://github.com/KeithCissell
+
 __Nick Delamora__ -         https://github.com/Delamora9
+
 __Christopher Franklyn__ -  https://github.com/cfranklynn
+
 __Jess Geiger__ -           https://github.com/CheezitBandit
+
 __River Ginther__ -         https://github.com/rginther
