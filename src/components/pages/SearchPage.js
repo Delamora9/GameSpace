@@ -67,15 +67,20 @@ export default class SearchPage extends React.Component {
     let searchResults = document.getElementById("returnResults");
     let gameSearch = document.getElementById("gameSearch");
     let userSearch = document.getElementById("userSearch");
+    let searchBar = document.getElementById("searchBar");
 
     // Get search value from URL query
-    let { query } = this.props.location;
-    let { search } = query;
-    let { searchType } = query;
+    if(this.props.location){
+      let { query } = this.props.location;
+      let { search } = query;
+      let { searchType } = query;
+    }
 
     // Refill search components
-    searchBar.value = search;
-    searchBar.focus();
+    if(searchBar){
+      searchBar.value = search;
+      searchBar.focus();
+    }
 
     // Steam API call URLs
     let steamKey = '36991C4777F98B19F85825A2368DE13A';
@@ -83,17 +88,19 @@ export default class SearchPage extends React.Component {
     let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamKey}&vanityurl=`;
 
     // Call proper searches and recheck boxes
-    if (searchType == "Both") {
-      gameSearch.checked = true;
-      userSearch.checked = true;
-      searchForGames(search);
-      searchForUsers(search);
-    } else if (searchType == "Game") {
-      gameSearch.checked = true;
-      searchForGames(search);
-    } else if (searchType == "User") {
-      userSearch.checked = true;
-      searchForUsers(search);
+    if(this.props.location){
+      if (searchType == "Both") {
+        gameSearch.checked = true;
+        userSearch.checked = true;
+        searchForGames(search);
+        searchForUsers(search);
+      } else if (searchType == "Game") {
+        gameSearch.checked = true;
+        searchForGames(search);
+      } else if (searchType == "User") {
+        userSearch.checked = true;
+        searchForUsers(search);
+      }
     }
 
     // Get list of games from Steam API
