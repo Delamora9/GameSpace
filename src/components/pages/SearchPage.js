@@ -70,11 +70,9 @@ export default class SearchPage extends React.Component {
     let searchBar = document.getElementById("searchBar");
 
     // Get search value from URL query
-    if(this.props.location){
-      let { query } = this.props.location;
-      let { search } = query;
-      let { searchType } = query;
-    }
+    let { query } = this.props.location;
+    let { search } = query;
+    let { searchType } = query;
 
     // Refill search components
     if(searchBar){
@@ -87,20 +85,19 @@ export default class SearchPage extends React.Component {
     let getAppListURL = 'api/http://api.steampowered.com/ISteamApps/GetAppList/v2';
     let userNameSearchURL = `api/http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamKey}&vanityurl=`;
 
+    console.log(this.props);
     // Call proper searches and recheck boxes
-    if(this.props.location){
-      if (searchType == "Both") {
+    if (searchType == "Both") {
         gameSearch.checked = true;
         userSearch.checked = true;
         searchForGames(search);
         searchForUsers(search);
-      } else if (searchType == "Game") {
+    } else if (searchType == "Game") {
         gameSearch.checked = true;
         searchForGames(search);
-      } else if (searchType == "User") {
+    } else if (searchType == "User") {
         userSearch.checked = true;
         searchForUsers(search);
-      }
     }
 
     // Get list of games from Steam API
